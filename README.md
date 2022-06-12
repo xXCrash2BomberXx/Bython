@@ -1,2 +1,2 @@
 # Bython
-Python with Braces
+Python with Braces (and constants)
