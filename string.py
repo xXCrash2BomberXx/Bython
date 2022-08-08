@@ -384,7 +384,7 @@ def console (version: str, log: bool = False) -> None:
             elif not total.strip("\n; "):
                 pass
             else:
-                var = exec_with_return(parse(total))
+                var = exec_with_return(parse(total+"\n"))
                 print(f"< {var!r}")
                 print(f"<< {default_timer()-timeit}s")
                 if log:
@@ -442,7 +442,7 @@ if __name__ == "__main__":
                 else:
                     ifile = sys.argv[3]
                 with open(ifile, "r") as f:
-                    total = parse(f.read())
+                    total = parse(f.read()+"\n")
             except IndexError:
                 raise FileNotFoundError("No input file specified")
             if not any(i in sys.argv[1:] for i in ["-n", "--no-out", "--nout"]):
