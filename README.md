@@ -44,5 +44,5 @@ More configurations can be found by running `bython -h`
 - Single-element dictionaries and sets must have a comma after the lone element (similar to the declaration of a single-element tuple) - this is to allow for easy `pass` blocks without using the keyword such as: `else: pass` now being written as `else {}`
 - Comments are immediately removed by the compiler and can be declared with `#`, `//`, or a multiline comment starting with `/*` and closing with `*/`
 - Comments CANNOT use string characters that are not escaped with `\` such as `\'` and `\"`
-- Along with the `and` and `or` keyword, `&&` and `||` have also been implemented respectively
+- Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
 - Increment and Decrement operators have been added such as: `++x`, `x++`, `--x`, and `x--`
