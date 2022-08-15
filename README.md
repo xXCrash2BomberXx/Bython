@@ -1,7 +1,7 @@
 # Bython
 Python with Braces (and constants)
 
-The [bython.bat](https://github.com/xXCrash2BomberXx/Bython/releases/download/1.0.0/bython.bat) file is a Windows command file you can place in the same folder as the core [string.py](https://github.com/xXCrash2BomberXx/Bython/releases/download/1.0.0/string.py) file to run bython from the command line just like python- just be sure to add the command file to your environment variables for easy usage!
+The bython.bat file is a Windows command file you can place in the same folder as the core string.py file to run bython from the command line just like python- just be sure to add the command file to your environment variables for easy usage!
 
 **Regardless of the braces syntax you use, Bython has your back! Check out the following that have been tested and should work flawlessly!**
 ```
@@ -30,8 +30,6 @@ def example (*args, **kwargs){}
 - run `bython "path_to_bython_file/filename.txt" -e -n` in a command line to run the file and not save the compiled copy
 
 More configurations can be found by running `bython -h`
-
-An example file has been provided in the attachments and linked [here](https://github.com/xXCrash2BomberXx/Bython/releases/download/1.0.0/example.txt)
 
 **Minor Bugs:**
 - Type annotations don't work on constants.
