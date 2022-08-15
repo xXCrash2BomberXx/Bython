@@ -274,6 +274,11 @@ def parse (string: str) -> str:
     def extras (string: str) -> str:
         return replace(replace(replace(string, "else if", "elif"), "||", " or "), "&&", " and ")
     
+    string2 = ""
+    while string2 != string:
+        string2 = string
+        string = replace(replace(string2, "\n{", "{"), " {", "{")
+    
     return extras(parseDec(parseInc(braces(replace(parseConstants(parseComments(replace(string, "{", "{\n"))), ";", "\n")))))
 
 from timeit import default_timer
