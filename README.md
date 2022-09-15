@@ -11,16 +11,16 @@ def example(value: T) -> T
 }
 ```
 ```
-def example () {
+for value in [] {
     return value;
 }
 ```
 ```
-def example(*args){
+while True {
 }
 ```
 ```
-def example (*args, **kwargs){}
+if True {} else {}
 ```
 
 **To compile a bython file to python, you can do one of the following:**
