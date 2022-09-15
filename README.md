@@ -30,7 +30,7 @@ if True {} else {}
 - run `bython "path_to_bython_file/filename.txt" -e -n` in a command line to run the file and not save the compiled copy
 
 More configurations can be found by running `bython -h`
-
+# Major Changes
 **Minor Bugs:**
 - Type annotations don't work on constants.
 - Type annotations, in general, can cause issues, so use them with caution. Hopefully, many should work
