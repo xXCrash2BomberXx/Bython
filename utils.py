@@ -265,7 +265,7 @@ def copy(arg: duck, trial: bool = False, quick: bool = False) -> duck:
         return arg
 
 
-def type(arg: duck, bases: tuple[builtins.type] = None, method: dict[str, function] = None) -> type:
+def type(arg: duck, bases: tuple[builtins.type] = None, method: dict[str, function] = None) -> builtins.type:
     '''
     The deep-typing of the value passed in.
 
@@ -368,7 +368,7 @@ def isinstance(arg: duck, ty: builtins.type) -> bool:
         return False
 
 
-def vars(func: function, f: bool = True, r: bool = True) -> dict[str, type]:
+def vars(func: function, f: bool = True, r: bool = True) -> dict[str, builtins.type]:
     '''
     The variables used within the parameters and scope of the given function. 
 
