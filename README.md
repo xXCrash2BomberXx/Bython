@@ -30,7 +30,10 @@ if True {} else {}
 - run `bython "path_to_bython_file/filename.txt" -e -n` in a command line to run the file and not save the compiled copy
 
 More configurations can be found by running `bython -h`
-# Major Changes
+# Major Changes and Additions
+- Increment and Decrement operators have been added such as: `++x`, `x++`, `--x`, and `x--`
+- Increment and Decrement operators also work with values such as: `++1`->`1+1`, `2++`->`2`, `--3`->`3-1`, `4--`->`4`
+
 **Minor Bugs:**
 - Type annotations don't work on constants.
 - Type annotations, in general, can cause issues, so use them with caution. Hopefully, many should work
@@ -45,4 +48,3 @@ More configurations can be found by running `bython -h`
 - Comments are immediately removed by the compiler and can be declared with `#`, `//`, or a multiline comment starting with `/*` and closing with `*/`
 - Comments CANNOT use string characters that are not escaped with `\` such as `\'` and `\"`
 - Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
-- Increment and Decrement operators have been added such as: `++x`, `x++`, `--x`, and `x--`
