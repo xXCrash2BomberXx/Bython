@@ -58,13 +58,19 @@ def parse (string: str) -> str:
             while True:
                 i = index(string, "++")
                 # ++x -> (x:=x+1)
-                if i != len(string)-1 and match(r"[_a-zA-Z]", string[i+2]):
-                    variable = search(r"[_a-zA-Z][_a-zA-Z0-9]*", string[i+2:]).group()
-                    string = replace(string, f"++{variable}", f"({variable}:={variable}+1)")
+                if i != len(string)-1 and match(r"[_a-zA-Z0-9]", string[i+2]):
+                    variable = search(r"[_a-zA-Z0-9]*", string[i+2:]).group()
+                    if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
+                        string = replace(string, f"++{variable}", f"({variable}+1)")
+                    else:
+                        string = replace(string, f"++{variable}", f"({variable}:={variable}+1)")
                 # x++ -> (x:=x+1)-1
                 elif i != 0 and match(r"[_a-z-A-Z0-9]", string[i-1]):
-                    variable = search(r"[_a-zA-Z][_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
-                    string = replace(string, f"{variable}++", f"({variable}:={variable}+1)-1")
+                    variable = search(r"[_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
+                    if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
+                        string = replace(string, f"{variable}++", f"({variable})")
+                    else:
+                        string = replace(string, f"{variable}++", f"(({variable}:={variable}+1)-1)")
                 else:
                     raise SyntaxError("Increment Operators must be called directly on the variable being incremented")
         except (TypeError, ValueError):
@@ -77,16 +83,22 @@ def parse (string: str) -> str:
         try:
             while True:
                 i = index(string, "--")
-                # ++x -> (x:=x-1)
-                if i != len(string)-1 and match(r"[_a-zA-Z]", string[i+2]):
-                    variable = search(r"[_a-zA-Z][_a-zA-Z0-9]*", string[i+2:]).group()
-                    string = replace(string, f"--{variable}", f"({variable}:={variable}-1)")
-                # x++ -> (x:=x-1)+1
+                # --x -> (x:=x-1)
+                if i != len(string)-1 and match(r"[_a-zA-Z0-9]", string[i+2]):
+                    variable = search(r"[_a-zA-Z0-9]*", string[i+2:]).group()
+                    if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
+                        string = replace(string, f"--{variable}", f"({variable}-1)")
+                    else:
+                        string = replace(string, f"--{variable}", f"({variable}:={variable}-1)")
+                # x-- -> (x:=x-1)+1
                 elif i != 0 and match(r"[_a-z-A-Z0-9]", string[i-1]):
-                    variable = search(r"[_a-zA-Z][_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
-                    string = replace(string, f"{variable}--", f"({variable}:={variable}-1)+1")
+                    variable = search(r"[_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
+                    if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
+                        string = replace(string, f"{variable}--", f"({variable})")
+                    else:
+                        string = replace(string, f"{variable}--", f"({variable}:={variable}-1)+1")
                 else:
-                    raise SyntaxError("Increment Operators must be called directly on the variable being incremented")
+                    raise SyntaxError("Decrement Operators must be called directly on the variable being decremented")
         except (TypeError, ValueError):
             pass
         return string
@@ -272,7 +284,7 @@ def parse (string: str) -> str:
         return string
     
     def extras (string: str) -> str:
-        return replace(replace(replace(string, "else if", "elif"), "||", " or "), "&&", " and ")
+        return replace(replace(replace(replace(replace(replace(string, "until", "while not "), "else if", "elif"), "catch", "except"), "throw", "raise"), "||", " or "), "&&", " and ")
     
     string2 = ""
     while string2 != string:
