@@ -33,6 +33,7 @@ More configurations can be found by running `bython -h`
 # Other Major Additions
 - Increment and Decrement operators have been added such as: `++x`, `x++`, `--x`, and `x--`
 - Increment and Decrement operators also work with values such as: `++1`->`1+1`, `2++`->`2`, `--3`->`3-1`, `4--`->`4`
+- `until` loops have been added and function as a `while not` loop
 - Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
@@ -40,7 +41,8 @@ More configurations can be found by running `bython -h`
 - This is bython, not python. This doesn't require indentations but you will have to use braces (`{`, `}`) and semicolons (`;`)
 - Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
 - Constants still need to be imported like a regular variable into other scopes using the `global` keyword and should be declared in the global scope.
-- Use parentheses (`(`, `)`) around lambda functions
+- Use parentheses (`(`, `)`) around `lambda` functions
+- Use parentheses (`(`, `)`) around `while` loop conditions
 - Single-element dictionaries and sets must have a comma after the lone element (similar to the declaration of a single-element tuple) - this is to allow for easy `pass` blocks without using the keyword such as: `else: pass` now being written as `else {}`
 - Comments are immediately removed by the compiler and can be declared with `#`, `//`, or a multiline comment starting with `/*` and closing with `*/`
 - Comments CANNOT use string characters that are not escaped with `\` such as `\'` and `\"`
