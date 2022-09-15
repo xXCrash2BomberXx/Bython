@@ -30,9 +30,11 @@ if True {} else {}
 - run `bython "path_to_bython_file/filename.txt" -e -n` in a command line to run the file and not save the compiled copy
 
 More configurations can be found by running `bython -h`
-# Major Changes and Additions
+# Other Major Additions
 - Increment and Decrement operators have been added such as: `++x`, `x++`, `--x`, and `x--`
 - Increment and Decrement operators also work with values such as: `++1`->`1+1`, `2++`->`2`, `--3`->`3-1`, `4--`->`4`
+- Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
+- Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
 # Other Chnages
 - This is bython, not python. This doesn't require indentations but you will have to use braces (`{`, `}`) and semicolons (`;`)
@@ -42,7 +44,6 @@ More configurations can be found by running `bython -h`
 - Single-element dictionaries and sets must have a comma after the lone element (similar to the declaration of a single-element tuple) - this is to allow for easy `pass` blocks without using the keyword such as: `else: pass` now being written as `else {}`
 - Comments are immediately removed by the compiler and can be declared with `#`, `//`, or a multiline comment starting with `/*` and closing with `*/`
 - Comments CANNOT use string characters that are not escaped with `\` such as `\'` and `\"`
-- Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
 
 # Minor Bugs
 - Type annotations don't work on constants.
