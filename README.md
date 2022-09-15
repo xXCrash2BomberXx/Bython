@@ -35,7 +35,7 @@ More configurations can be found by running `bython -h`
 - Increment and Decrement operators have been added such as: `++x`, `x++`, `--x`, and `x--`
 - Increment and Decrement operators also work with values such as: `++1`->`1+1`, `2++`->`2`, `--3`->`3-1`, `4--`->`4`
 - `until` loops have been added and function as a `while not` loop
-- Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
+- Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
 # Small Changes/Additions To Keep In Mind
