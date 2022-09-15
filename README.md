@@ -51,7 +51,8 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 - The `copy` function has been reworked to now copy entire classes, functions, and multi-dimensional lists and dictionaries, as well as featuring some new optional parameters if you don't want to take a slight performance drop with the deeper copying
 - The `set` data container has been completely remade to now be a blend of the best parts of lists and dictionaries while sporting an all new look without losing any of its original functionality
 - The `flatten` function has been added to take a multi-dimensional list and make it into a one-dimensional list
-- The builtin `type` function has been reworked to now be *much* more useful
+- The builtin `type` function has been reworked to now be *much* more useful by giving deeper type descriptions
+- The builtin `isinstance` function has also bee reworked to remove that pesky `isinstance(True, int)` from returning `True` while also now checking deeper typing
 
 # Small Changes/Additions To Keep In Mind
 - Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
