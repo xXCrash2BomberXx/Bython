@@ -36,7 +36,7 @@ More configurations can be found by running `bython -h`
 - Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
-# Other Chnages
+# Other Changes
 - This is bython, not python. This doesn't require indentations but you will have to use braces (`{`, `}`) and semicolons (`;`)
 - Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
 - Constants still need to be imported like a regular variable into other scopes using the `global` keyword and should be declared in the global scope.
