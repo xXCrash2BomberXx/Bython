@@ -42,7 +42,7 @@ More configurations can be found by running `bython -h`
 - Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
 - Constants still need to be imported like a regular variable into other scopes using the `global` keyword and should be declared in the global scope.
 - Use parentheses (`(`, `)`) around `lambda` functions
-- Use parentheses (`(`, `)`) around `while` loop conditions
+- Use parentheses (`(`, `)`) around `until` loop conditions
 - Single-element dictionaries and sets must have a comma after the lone element (similar to the declaration of a single-element tuple) - this is to allow for easy `pass` blocks without using the keyword such as: `else: pass` now being written as `else {}`
 - Comments are immediately removed by the compiler and can be declared with `#`, `//`, or a multiline comment starting with `/*` and closing with `*/`
 - Comments CANNOT use string characters that are not escaped with `\` such as `\'` and `\"`
