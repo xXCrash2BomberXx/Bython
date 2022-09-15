@@ -46,6 +46,13 @@ More configurations can be found by running `bython -h`
 - Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
+# What is the `utils` package?
+The `utils` contains small utilities to make Python, and by extension Bython, more user friendly. The package adds in "hidden" types that Python has but hides from the user along with faster, more useful and user friendly, or completely new functions that work in standard Python!
+- The `copy` function has been reworked to now copy entire classes, functions, and multi-dimensional lists and dictionaries, as well as featuring some new optional parameters if you don't want to take a slight performance drop with the deeper copying
+- The `set` data container has been completely remade to now be a blend of the best parts of lists and dictionaries while sporting an all new look without losing any of its original functionality
+- The `flatten` function has been added to take a multi-dimensional list and make it into a one-dimensional list
+- The builtin `type` function has been reworked to now be *much* more useful
+
 # Small Changes/Additions To Keep In Mind
 - Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
 - Constants still need to be imported like a regular variable into other scopes using the `global` keyword and should be declared in the global scope.
