@@ -330,25 +330,28 @@ def console (version: str, log: bool = False) -> None:
             total = ""
             inp = input(">>> ")
             total += inp
-            while inp.lower() not in ["", "quit()", "^Z"]:
+            while inp.lower().strip() not in ["", "quit()", "^z"]:
                 inp = input("... ")
                 total += inp
             timeit = default_timer()
-            if inp.lower() in ["quit()", "^z"]:
+            if inp.lower().strip() in ["quit()", "^z"]:
                 if log:
                     with open("log.log" , "a+") as f:
                         f.write("--End--\n\n")
-                break
+                return
             elif not total.strip("\n; "):
                 pass
             else:
                 var = exec_with_return(parse(total+"\n"))
-                print(f"< {var!r}")
+                if var != None:
+                    print(f"< {var!r}")
                 print(f"<< {default_timer()-timeit}s")
                 if log:
                     with open("log.log" , "a+") as f:
                         f.write(f"{total}\n< {var!r}\n")
         except Exception as e:
+            if type(e) == EOFError:
+                break
             print(f"< {e}")
             print(f"<< {default_timer()-timeit}s")
 
