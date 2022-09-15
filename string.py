@@ -1,3 +1,8 @@
+try:
+    from utils import *
+except ModuleNotFoundError:
+    print("The 'utils' module hos not been loaded")
+
 # Compile Bython to Python
 def parse (string: str) -> str:
     # Count Backslashes Before End
