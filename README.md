@@ -32,7 +32,8 @@ if True {} else {}
 More configurations can be found by running `bython -h`
 # Other Major Additions
 - This is bython, not python. This doesn't require indentations but you will have to use braces (`{`, `}`) and semicolons (`;`)
-- Increment and Decrement operators have been added such as: `++x`->`(x:=x+1)`, `x++`->`((x:=x+1)-1)`, `--x`->`(x:=x-1)`, and `x--`->`((x:=x-1)+1)`
+- Increment and Decrement operators have been added such as:
+- - `++x`->`(x:=x+1)`, `x++`->`((x:=x+1)-1)`, `--x`->`(x:=x-1)`, and `x--`->`((x:=x-1)+1)`
 - Increment and Decrement operators also work with values such as: `++1`->`1+1`, `2++`->`2`, `--3`->`3-1`, `4--`->`4`
 - `until` loops have been added and function as a `while not` loop
 - Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
