@@ -34,12 +34,7 @@ More configurations can be found by running `bython -h`
 - Increment and Decrement operators have been added such as: `++x`, `x++`, `--x`, and `x--`
 - Increment and Decrement operators also work with values such as: `++1`->`1+1`, `2++`->`2`, `--3`->`3-1`, `4--`->`4`
 
-**Minor Bugs:**
-- Type annotations don't work on constants.
-- Type annotations, in general, can cause issues, so use them with caution. Hopefully, many should work
-- As with annotations, f-strings can also cause issues
-
-**Language Changes to keep in mind:**
+# Other Chnages
 - This is bython, not python. This doesn't require indentations but you will have to use braces (`{`, `}`) and semicolons (`;`)
 - Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
 - Constants still need to be imported like a regular variable into other scopes using the `global` keyword and should be declared in the global scope.
@@ -48,3 +43,8 @@ More configurations can be found by running `bython -h`
 - Comments are immediately removed by the compiler and can be declared with `#`, `//`, or a multiline comment starting with `/*` and closing with `*/`
 - Comments CANNOT use string characters that are not escaped with `\` such as `\'` and `\"`
 - Along with the `and` and `or` keywords, `&&` and `||` have also been implemented respectively
+
+# Minor Bugs
+- Type annotations don't work on constants.
+- Type annotations, in general, can cause issues, so use them with caution. Hopefully, many should work
+- As with annotations, f-strings can also cause issues
