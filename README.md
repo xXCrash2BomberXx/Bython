@@ -47,12 +47,18 @@ More configurations can be found by running `bython -h`
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
 # What is the `utils` package?
-The `utils` contains small utilities to make Python, and by extension Bython, more user friendly. The package adds in "hidden" types that Python has but hides from the user along with faster, more useful and user friendly, or completely new functions that work in standard Python!
+The `utils` contains small utilities to make Python, and by extension Bython, more user-friendly. The package adds in "hidden" types that Python has but hides from the user along with faster, more useful and user friendly, or completely new functions that work in standard Python!
 - The `copy` function has been reworked to now copy entire classes, functions, and multi-dimensional lists and dictionaries, as well as featuring some new optional parameters if you don't want to take a slight performance drop with the deeper copying
 - The `set` data container has been completely remade to now be a blend of the best parts of lists and dictionaries while sporting an all new look without losing any of its original functionality
 - The `flatten` function has been added to take a multi-dimensional list and make it into a one-dimensional list
 - The builtin `type` function has been reworked to now be *much* more useful by giving deeper type descriptions
 - The builtin `isinstance` function has also bee reworked to remove that pesky `isinstance(True, int)` from returning `True` while also now checking deeper typing
+- The builtin `vars` function finally has something useful to do! The function now returns a `dict` of all variables used within the function it is used on
+- The `annotate` wrapper has been added to enforce deep-typing annotations on the arguments of functions as well as constant members!
+- The `init` wrapper has been added to build those annoying `init` methods of classes using simple annotations and default values
+- The `factory` class has been added to make using the `init` wrapper even more user-friendly by allowing unique instantiations of data containers!
+- The `constants` wrapper has been added for when you want some members of a class to be constants, although the new `init` wrapper does this and more
+- The `dicts` wrapper unifies the attributes and indeces of a class allowing both `instance["value"]` and `instance.value` to function identically
 
 # Small Changes/Additions To Keep In Mind
 - Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
