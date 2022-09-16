@@ -43,6 +43,14 @@ More configurations can be found by running `bython -h`
   - `--3`->`3-1`
   - `4--`->`4`
 - `until` loops have been added and function as a `while not` loop
+- `do-while` loops have been added and can be used as:
+```
+x=0;
+do {
+    print(x);
+    x++;
+} while x < 5;
+```
 - Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
