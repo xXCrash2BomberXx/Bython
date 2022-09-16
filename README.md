@@ -1,4 +1,4 @@
-# Bython (aka Python with Braces)
+# Bython (aka Python w/ Braces)
 
 **Regardless of the braces syntax you use, Bython has your back! Check out the following that have been tested and should work flawlessly!**
 ```
