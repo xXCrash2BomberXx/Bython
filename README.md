@@ -1,5 +1,5 @@
 # Bython
-Python with Braces (and constants)
+Python with Braces
 
 The bython.bat file is a Windows command file you can place in the same folder as the core string.py file to run bython from the command line just like python- just be sure to add the command file to your environment variables for easy usage!
 
