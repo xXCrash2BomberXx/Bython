@@ -234,6 +234,17 @@ def parse (string: str) -> str:
                 count -= 1
         return op
     
+    # Replace Do-While loops with standard While loops
+    def doWhile (string: str) -> str:
+        i_do = index(string, "do")
+        while i_do != float("inf"):
+            i_brace = index(string, "{", i_do)
+            i_close = getClose(string, i_brace)
+            i_while = index(string, "\n", i_close)
+            string = string[:i_do]+"\nif True {"+string[i_brace+1:i_close-1]+"\n}\n"+string[i_close+1:i_while]+string[i_brace:i_close+1]+string[i_while+1:]
+            i_do = index(string, "do")
+        return string
+    
     # Replace Braces (Filtering Dictionaries and Indeces)
     def braces (string: str) -> str:
         try:
@@ -275,14 +286,24 @@ def parse (string: str) -> str:
         return string
     
     def extras (string: str) -> str:
-        return replace(replace(replace(replace(replace(replace(string, "until", "while not "), "else if", "elif"), "catch", "except"), "throw", "raise"), "||", " or "), "&&", " and ")
+        return replace(
+            replace(
+                replace(
+                    replace(
+                        replace(
+                            replace(string, "until", "while not ")
+                            , "else if", "elif")
+                        , "catch", "except")
+                    , "throw", "raise")
+                , "||", " or ")
+            , "&&", " and ")
     
     string2 = ""
     while string2 != string:
         string2 = string
         string = replace(replace(string2, "\n{", "{"), " {", "{")
     
-    return extras(parseDec(parseInc(braces(replace(parseComments(replace(string, "{", "{\n")), ";", "\n")))))
+    return parseDec(parseInc(braces(doWhile(extras(replace(parseComments(replace(string, "{", "{\n")), ";", "\n"))))))
 
 from timeit import default_timer
 import ast
