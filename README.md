@@ -48,7 +48,7 @@ More configurations can be found by running `bython -h`
     do {
         print(x);
         x++;
-    } while x < 5;```
+    } while x < 5;
 - Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
