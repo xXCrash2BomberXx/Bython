@@ -41,20 +41,6 @@ def parse (string: str) -> str:
             else:
                 i += 1
         return strings
-
-    # Validates Constants
-    def parseConstants (string: str, const: str = "const") -> str:
-        from re import findall
-        for variable in set(findall(const+r"[\s\t]*[_a-zA-Z][_a-zA-Z0-9]*(?=[\s\t]*=[^=]|[\s\t]*:=)", string)):
-            if index(string, variable) != float("inf"):
-                i = 0
-                if len(list(filter(lambda val: val != False, 
-                              [False if index(string, t, i) == float("inf") else [i:=index(string, t, i)+1, True] for t in 
-                               findall(variable.replace(const, "", 1).strip()+r"(?=[\s\t]*=[^=]|[\s\t]*[\+\-\*\/\:]=)", string)]))) > 1:
-                    raise ValueError(f"Cannot reassign a constant '{variable.replace(const, '', 1).strip()}'")
-                else:
-                    string = replace(string, variable, variable.replace(const, "", 1).strip())
-        return string
     
     # Parse Increment Operators
     def parseInc (string: str) -> str:
@@ -296,7 +282,7 @@ def parse (string: str) -> str:
         string2 = string
         string = replace(replace(string2, "\n{", "{"), " {", "{")
     
-    return extras(parseDec(parseInc(braces(replace(parseConstants(parseComments(replace(string, "{", "{\n"))), ";", "\n")))))
+    return extras(parseDec(parseInc(braces(replace(parseComments(replace(string, "{", "{\n")), ";", "\n")))))
 
 from timeit import default_timer
 import ast
