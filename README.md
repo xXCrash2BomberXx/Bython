@@ -61,8 +61,6 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 - The `dicts` wrapper unifies the attributes and indeces of a class allowing both `instance["value"]` and `instance.value` to function identically
 
 # Small Changes/Additions To Keep In Mind
-- Python does NOT enforce constants. The compiler will throw the errors if you try to modify a constant
-- Constants still need to be imported like a regular variable into other scopes using the `global` keyword and should be declared in the global scope.
 - Use parentheses (`(`, `)`) around `lambda` functions
 - Use parentheses (`(`, `)`) around `until` loop conditions
 - Single-element dictionaries and sets must have a comma after the lone element (similar to the declaration of a single-element tuple) - this is to allow for easy `pass` blocks without using the keyword such as: `else: pass` now being written as `else {}`
