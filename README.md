@@ -68,6 +68,5 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 - Comments CANNOT use string characters that are not escaped with `\` such as `\'` and `\"`
 
 # Minor Bugs
-- Type annotations don't work on constants.
 - Type annotations, in general, can cause issues, so use them with caution. Hopefully, many should work
 - As with annotations, f-strings can also cause issues
