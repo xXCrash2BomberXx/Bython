@@ -3,7 +3,9 @@ try:
 except ModuleNotFoundError:
     print("The 'utils' module hos not been loaded")
 
-class AbstractError (Exception):
+import builtins
+
+class AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Raised when trying to instantiate an abstract class'''
     pass
 
@@ -447,7 +449,11 @@ if __name__ == "__main__":
                     else:
                         ofile = os.path.splitext(ifile)[0]+".py"
                     with open(ofile, "w+") as f2:
-                        f2.write(total)
+                        try:
+                            with open(os.path.dirname(os.path.realpath(__file__))+"\\utils.py", "r") as f3:
+                                f2.write(f3.read()+"\n"+total)
+                        except FileNotFoundError:
+                            f2.write(total)
                 except IndexError:
                     raise FileNotFoundError("No output file specified")
             if any(i in sys.argv[1:] for i in ["-e", "--eval", "--exec", "-l", "--log"]):
