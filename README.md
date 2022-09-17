@@ -61,7 +61,7 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 - The `annotate` wrapper has been added to enforce deep-typing annotations on the arguments of functions as well as constant members!
 - The `init` wrapper has been added to build those annoying `init` methods of classes using simple annotations and default values
 - The `factory` class has been added to make using the `init` wrapper even more user-friendly by allowing unique instantiations of data containers!
-- The `constants` wrapper has been added for when you want some members of a class to be constants, although the new `init` wrapper does this and more
+- The `constants` wrapper has been added for when you want some members of a class to be constants
 - The `dicts` wrapper unifies the attributes and indeces of a class allowing both `instance["value"]` and `instance.value` to function identically
 
 # Small Changes/Additions To Keep In Mind
