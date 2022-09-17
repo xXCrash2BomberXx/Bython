@@ -1,6 +1,11 @@
 import builtins
 
 
+class AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})):
+    '''Raised when trying to instantiate an abstract class'''
+    pass
+
+
 class duck (builtins.type, metaclass=builtins.type("duck", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Typing for variables without a strict typing class'''
     __module__ = builtins.__name__
@@ -11,7 +16,7 @@ class local (builtins.type, metaclass=builtins.type("local", (builtins.type,), {
     __module__ = builtins.__name__
 
 
-class const (list, metaclass=type("const", (type,), {"__repr__": lambda self: self.__name__})):
+class const (builtins.list, metaclass=builtins.type("const", (type,), {"__repr__": lambda self: self.__name__})):
     '''Typing for constant static members using the 'init' decorator'''
     __module__ = builtins.__name__
 
@@ -660,59 +665,3 @@ def dicts (cl: function) -> function:
         cl2 = type(cl.__name__, cl.__bases__, {**dict(cl.__dict__), "__getitem__": __getitem__, "__getattribute__": __getattribute__})
         return cl2(*args, **kwargs)
     return wrapper
-
-
-if __name__ == "__main__":
-
-    @annotate
-    def test(a: duck, b: int, *args1: str, x: dict[str, list[set]] = {}, **kwargs1: bool) -> bool:
-        return True
-
-    test(1, 2, '3', '4', x={'5': [{6}]}, y=True, z=False)
-
-    @init
-    class test:
-        b: bool
-        i: int = 7
-        l: list = factory([])
-        d: const[dict] = factory({1: 2})
-
-    x = test(1, '1', [2], x=5)
-    print(type(x.i))  # NOTE: variable 'i' is automatically parsed as an int
-    print(x.d)  # NOTE: the 'const' type prevents passing in of alternate values
-    print(x.x)  # NOTE: the instance now has an additional member 'x'
-
-    @init
-    class test:
-        __strict__ = True  # DO NOT ANNOTATE  # Prevents additional keyword arguments and auto-conversion
-        b: bool
-        i: int = 7
-        l: list[int] = factory([])
-        d: const[dict] = factory({1: 2})
-
-    test(True, 1, [2])
-    # NOTE: variables cannot be automatically parsed to different types
-    # NOTE: additional members cannot be added during instantiation
-
-    @constants
-    class test:
-        x: const = 1
-        y: const
-        z: const
-        def __init__ (self, y):
-            self.y = y
-
-    x = test(2)
-    # x.x = 3  # ValueError: Cannot reassign constant value 'x'
-    # x.y = 3  # ValueError: Cannot reassign constant value 'y'
-    x.z = 3
-    # x.z = 4  # ValueError: Cannot reassign constant value 'z'
-
-    @dicts
-    class test:
-        def __init__ (self, x):
-            self.x = x
-    
-    y = test(1)
-    print(y["x"], y.x)
-    
