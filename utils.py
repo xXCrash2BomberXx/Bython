@@ -268,7 +268,7 @@ def copy(arg: duck, trial: builtins.bool = False, quick: builtins.bool = False) 
         return builtins.type(builtins.type(arg).__name__, builtins.type(arg).__bases__, builtins.dict(copy(arg.__dict__)))()
     else:
         return arg
-
+    
 
 def type(arg: duck, bases: builtins.tuple[builtins.type] = None, method: builtins.dict[builtins.str, function] = None) -> builtins.type:
     '''
@@ -322,7 +322,7 @@ def type(arg: duck, bases: builtins.tuple[builtins.type] = None, method: builtin
                 return s
     else:
         return builtins.type(arg, bases, method)
-
+    
 
 def isinstance(arg: duck, ty: builtins.type) -> builtins.bool:
     '''
