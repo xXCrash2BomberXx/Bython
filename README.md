@@ -46,6 +46,7 @@ More configurations can be found by running `bython -h`
         print(x);
         x++;
     } while x < 5;
+- The `interface` class declaration has also been added for classes you don't want instantiated
 - Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
 
