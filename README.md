@@ -20,13 +20,12 @@ while True {
 if True {} else {}
 ```
 
-**To compile a bython file to python, you can do one of the following:**
-- drag the bython file onto the command file to only compile
-- run `bython "path_to_bython_file/filename.txt"` in a command line to only compile
-- run `bython "path_to_bython_file/filename.txt" -e` to compile and run the file
-- run `bython "path_to_bython_file/filename.txt" -e -n` in a command line to run the file and not save the compiled copy
+**To run a Bython file, you can do one of the following:**
+- drag the bython file onto the command file
+- run `bython "path_to_bython_file/filename.txt"` in a command line
 
 More configurations can be found by running `bython -h`
+
 # Other Major Additions
 - This is bython, not python. This doesn't require indentations but you will have to use braces (`{`, `}`) and semicolons (`;`)
 - Increment and Decrement operators have been added such as:
