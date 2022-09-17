@@ -342,11 +342,8 @@ def exec_with_return(code):
     else:
         exec(compile(last_ast, "<ast>", "exec"), globals())
 
-def console (version: str, log: bool = False) -> None:
+def console (version: str) -> None:
     print(f"Bython {version}\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.")
-    if log:
-        with open("log.log" , "a+") as f:
-            f.write(f"--Begin (v{version})--\n")
     while True:
         try:
             total = ""
@@ -357,9 +354,6 @@ def console (version: str, log: bool = False) -> None:
                 total += inp
             timeit = default_timer()
             if inp.lower().strip() in ["quit()", "^z"]:
-                if log:
-                    with open("log.log" , "a+") as f:
-                        f.write("--End--\n\n")
                 return
             elif not total.strip("\n; "):
                 pass
@@ -368,9 +362,6 @@ def console (version: str, log: bool = False) -> None:
                 if var != None:
                     print(f"< {var!r}")
                 print(f"<< {default_timer()-timeit}s")
-                if log:
-                    with open("log.log" , "a+") as f:
-                        f.write(f"{total}\n< {var!r}\n")
         except Exception as e:
             if type(e) == EOFError:
                 break
@@ -387,104 +378,64 @@ if __name__ == "__main__":
             print("usage: bython [option] ... [file]\n"+
                   "-h\t: print this help message and exit (also --help)\n"+
                   "-i\t: input file to compile from (also --in, --ifile)\n"+
-                  "-o\t: output file to compile to (also --out, --ofile)\n"+
-                  "-n\t: do not save the compiled file (also --no-out, --nout)\n"+
-                  "-e\t: run the input file after compiled (also --eval, --exec)\n"+
-                  "-t\t: open the bython terminal (also --terminal, --console)\n"+
-                  "-v\t: print the Bython version number and exit (also --version)\n"+
-                  "-l\t: log the input and output to a file at the current directory called 'log.log' (also --log)\n"+
-                  "-c\t: clear current log file in directory (also --clear)\n"+
-                  "-d\t: delete current log file in directory (also --del, --delete")
-            sys.exit(2)
-        if any(i in sys.argv[1:] for i in ["-v", "--version"]):
+                  "-c\t: output file to compile to (also -o, --compile, --out, --ofile)\n"+
+                  "-v\t: print the Bython version number and exit (also --version)\n")
+        elif any(i in sys.argv[1:] for i in ["-v", "--version"]):
             print(f"Bython {version}")
-            sys.exit(2)
-        if any(i in sys.argv[1:] for i in ["-c", "--clear"]):
-            with open("log.log", "w+") as f:
-                f.write("")
-            print("Cleared Log")
-        if any(i in sys.argv[1:] for i in ["-d", "--del", "--delete"]):
-            if os.path.exists("log.log"):
-                os.remove("log.log")
-            print("Deleted Log")
-        if any(i[0] != "-" for i in sys.argv[1:]) or any(i in sys.argv[1:] for i in ["-i", "--in", "--ifile", "-o", "--out", "--ofile"]):
-            try:
-                # bython -i in.txt
-                if "-i" in sys.argv:
-                    ifile = sys.argv[sys.argv.index("-i")+1]
-                # bython --in in.txt
-                elif "--in" in sys.argv:
-                    ifile = sys.argv[sys.argv.index("--in")+1]
-                # bython --ifile in.txt
-                elif "--ifile" in sys.argv:
-                    ifile = sys.argv[sys.argv.index("--ifile")+1]
-                # bython in.txt
-                elif sys.argv[1][0] != "-":
-                    ifile = sys.argv[1]
-                # byfile -o out.py in.txt
-                else:
-                    ifile = sys.argv[3]
-                with open(ifile, "r") as f:
-                    total = parse(f.read()+"\n")
-            except IndexError:
-                raise FileNotFoundError("No input file specified")
-            if not any(i in sys.argv[1:] for i in ["-n", "--no-out", "--nout"]):
+        else:
+            if any(i[0] != "-" for i in sys.argv[1:]) or any(i in sys.argv[1:] for i in ["-i", "--in", "--ifile"]):
                 try:
-                    # bython -i in.txt -o out.py | bython in.txt -o out.py | bython -o out.py in.txt | bython -o out.py -i in.txt
-                    if "-o" in sys.argv:
-                        ofile = sys.argv[sys.argv.index("-o")+1]
-                    # bython -i in.txt --out out.py | bython in.txt --out out.py | bython --out out.py in.txt | bython --out out.py -i in.txt
-                    elif "--out" in sys.argv:
-                        ofile = sys.argv[sys.argv.index("--out")+1]
-                    # bython -i in.txt --ofile out.py | bython in.txt --ofile out.py | bython --ofile out.py in.txt | bython --ofile out.py -i in.txt
-                    elif "--ofile" in sys.argv:
-                        ofile = sys.argv[sys.argv.index("--ofile")+1]
-                    # bython in.txt out.py
-                    elif len(sys.argv) > 2 and sys.argv[1][0] != "-" and sys.argv[2][0] != "-":
-                        ofile = sys.argv[2]
-                    # bython -i in.txt out.py
-                    elif len(sys.argv) > 3 and sys.argv[1] in ["-i", "--in", "--ifile"] and sys.argv[2][0] != "-" and sys.argv[3][0] != "-":
-                        ofile = sys.argv[3]
                     # bython -i in.txt
+                    if "-i" in sys.argv:
+                        ifile = sys.argv[sys.argv.index("-i")+1]
+                    # bython --in in.txt
+                    elif "--in" in sys.argv:
+                        ifile = sys.argv[sys.argv.index("--in")+1]
+                    # bython --ifile in.txt
+                    elif "--ifile" in sys.argv:
+                        ifile = sys.argv[sys.argv.index("--ifile")+1]
                     else:
+                        ifile = list(filter(lambda x: x[0] !="-", sys.argv[1:]))[0]
+                    with open(ifile, "r") as f:
+                        total = parse(f.read()+"\n")
+                except IndexError:
+                    raise FileNotFoundError("No input file specified")
+                if any(i in sys.argv[1:] for i in ["-c", "-o", "--compile", "--out", "--ofile"]):
+                    try:
+                        # bython -i in.txt -c out.py | bython in.txt -c out.py | bython -c out.py -i in.txt
+                        if "-c" in sys.argv:
+                            ofile = sys.argv[sys.argv.index("-c")+1]
+                        # bython -i in.txt -o out.py | bython in.txt -o out.py | bython -o out.py -i in.txt
+                        elif "-o" in sys.argv:
+                            ofile = sys.argv[sys.argv.index("-o")+1]
+                        # bython -i in.txt --compile out.py | bython in.txt --compile out.py | bython --compile out.py -i in.txt
+                        elif "--compile" in sys.argv:
+                            ofile = sys.argv[sys.argv.index("--compile")+1]
+                        # bython -i in.txt --out out.py | bython in.txt --out out.py | bython --out out.py -i in.txt
+                        elif "--out" in sys.argv:
+                            ofile = sys.argv[sys.argv.index("--out")+1]
+                        # bython -i in.txt --ofile out.py | bython in.txt --ofile out.py | bython --ofile out.py -i in.txt
+                        elif "--ofile" in sys.argv:
+                            ofile = sys.argv[sys.argv.index("--ofile")+1]
+                    except IndexError:
                         ofile = os.path.splitext(ifile)[0]+".py"
                     with open(ofile, "w+") as f2:
                         try:
-                            with open(os.path.dirname(os.path.realpath(__file__))+"\\utils.py", "r") as f3:
+                            with open(os.path.dirname(os.path.realpath(__file__))+r"\utils.py", "r") as f3:
                                 f2.write(f3.read()+"\n"+total)
                         except FileNotFoundError:
                             f2.write(total)
-                except IndexError:
-                    raise FileNotFoundError("No output file specified")
-            if any(i in sys.argv[1:] for i in ["-e", "--eval", "--exec", "-l", "--log"]):
-                log = any(i in sys.argv[1:] for i in ["-l", "--log"])
-                if log:
-                    with open("log.log", "a+") as f:
-                        f.write(f"--Begin (v{version})--\n")
                 try:
                     timeit = default_timer()
                     var = exec_with_return(total)
                     if var != None:
                         print(f"< {var!r}")
                     print(f"<< {default_timer()-timeit}s")
-                    if log:
-                        with open("log.log" , "a+") as f:
-                            f.write(f"{total}\n< {var!r}\n")
                 except Exception as e:
                     print(f"< {e}")
                     print(f"<< {default_timer()-timeit}s")
-                if log:
-                    with open("log.log" , "a+") as f:
-                        f.write("--End--\n\n")
-            if any(i in sys.argv[1:] for i in ["-t", "--terminal", "--console"]):
-                if any(i in sys.argv[1:] for i in ["-l", "--log"]):
-                    console(version, log=True)
-                else:
-                    console(version)
-        elif any(i in sys.argv[1:] for i in ["-t", "--terminal", "--console", "-l", "--log"]):
-            if any(i in sys.argv[1:] for i in ["-l", "--log"]):
-                console(version, log=True)
             else:
                 console(version)
     else:
         console(version)
+        
