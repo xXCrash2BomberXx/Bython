@@ -3,6 +3,10 @@ try:
 except ModuleNotFoundError:
     print("The 'utils' module hos not been loaded")
 
+class AbstractError (Exception):
+    '''Raised when trying to instantiate an abstract class'''
+    pass
+
 # Compile Bython to Python
 def parse (string: str) -> str:
     # Count Backslashes Before End
@@ -245,6 +249,15 @@ def parse (string: str) -> str:
             i_do = index(string, "do")
         return string
     
+    def interface (string: str) -> str:
+        i_interface = index(string, "interface")
+        while i_interface != float("inf"):
+            i_close = getClose(string, index(string, "{", i_interface))
+            string = string[:i_close]+'\ndef __init__ (self, *args, **kwargs){raise AbstractError("Cannot instantiate abstract class")}\n'+string[i_close:]
+            string = replace(string, "interface", "class")
+            i_interface = index(string, "interface")
+        return string
+    
     # Replace Braces (Filtering Dictionaries and Indeces)
     def braces (string: str) -> str:
         try:
@@ -303,7 +316,7 @@ def parse (string: str) -> str:
         string2 = string
         string = replace(replace(string2, "\n{", "{"), " {", "{")
     
-    return parseDec(parseInc(braces(doWhile(extras(replace(parseComments(replace(string, "{", "{\n")), ";", "\n"))))))
+    return parseDec(parseInc(braces(interface(doWhile(extras(replace(parseComments(replace(string, "{", "{\n")), ";", "\n")))))))
 
 from timeit import default_timer
 import ast
