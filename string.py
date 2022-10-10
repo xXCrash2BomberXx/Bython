@@ -292,8 +292,8 @@ def parse (string: str) -> str:
                             if r == float("inf"):
                                 r = 0
                             tabs = count(string[r:i], "\t")+1
-                            string = (string[:i]+":"+("\n" if count(string[i+1:cl], "\n") > 1 else "")+
-                            "\n".join(["\t"*tabs+i.strip(" ") for i in string[i+1:cl].split("\n")])+
+                            string = (string[:i]+":"+("\n" if count(string[i+1:cl], "\n") > 1 else "")+"\n"+
+                            "\n".join(["\t"*tabs+i.strip(" ") for i in string[i+1:cl].split("\n")])+"\n"+
                             "\n".join([i.strip(" ") for i in split(string[cl+1:], "\n")]))
                 i += 1
         except (TypeError, ValueError):
