@@ -1,7 +1,7 @@
 try:
     from utils import *
 except ModuleNotFoundError:
-    print("The 'utils' module hos not been loaded")
+    pass
 
 import builtins
 
@@ -342,7 +342,7 @@ def exec_with_return(code):
     else:
         exec(compile(last_ast, "<ast>", "exec"), globals())
 
-def console (version: str) -> None:
+def console (version: str, debug: bool = False) -> None:
     print(f"Bython {version}\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.")
     while True:
         try:
@@ -361,12 +361,14 @@ def console (version: str) -> None:
                 var = exec_with_return(parse(total+"\n"))
                 if var != None:
                     print(f"< {var!r}")
-                print(f"<< {default_timer()-timeit}s")
+                    if debug:
+                        print(f"<< {default_timer()-timeit}s")
         except Exception as e:
             if type(e) == EOFError:
                 break
             print(f"< {e}")
-            print(f"<< {default_timer()-timeit}s")
+            if debug:
+                print(f"<< {default_timer()-timeit}s")
 
 if __name__ == "__main__":
     import sys,  os
@@ -379,6 +381,7 @@ if __name__ == "__main__":
                   "-h\t: print this help message and exit (also --help)\n"+
                   "-i\t: input file to compile from (also --in, --ifile)\n"+
                   "-c\t: output file to compile to (also -o, --compile, --out, --ofile)\n"+
+                  "-d\t: display timer information of file compilation and execution (also -t, --debug, --time, --timer)\n"+
                   "-v\t: print the Bython version number and exit (also --version)\n")
         elif any(i in sys.argv[1:] for i in ["-v", "--version"]):
             print(f"Bython {version}")
@@ -430,12 +433,14 @@ if __name__ == "__main__":
                     var = exec_with_return(total)
                     if var != None:
                         print(f"< {var!r}")
-                    print(f"<< {default_timer()-timeit}s")
+                    if any(i in sys.argv[1:] for i in ["-d", "-t", "--debug", "--time", "--timer"]):
+                        print(f"<< {default_timer()-timeit}s")
                 except Exception as e:
                     print(f"< {e}")
-                    print(f"<< {default_timer()-timeit}s")
+                    if any(i in sys.argv[1:] for i in ["-d", "-t", "--debug", "--time", "--timer"]):
+                        print(f"<< {default_timer()-timeit}s")
             else:
-                console(version)
+                console(version, any(i in sys.argv[1:] for i in ["-d", "-t", "--debug", "--time", "--timer"]))
     else:
-        console(version)
+        console(version, any(i in sys.argv[1:] for i in ["-d", "-t", "--debug", "--time", "--timer"]))
         
