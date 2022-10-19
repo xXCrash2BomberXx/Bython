@@ -135,7 +135,7 @@ def parse (string: str) -> str:
         return string
     
     # Index While Ignoring Sub-Strings
-    def index (string: str, value: str, start: int = 0, end: int = -1):
+    def index (string: str, value: str, start: int = 0, end: int = -1) -> int:
         p = parseStrings(string)
         try:
             while True:
@@ -147,7 +147,7 @@ def parse (string: str) -> str:
             return float("inf")
 
     # Replace While Ignoring Sub-Strings
-    def replace (string: str, old: str, new: str):
+    def replace (string: str, old: str, new: str) -> str:
         i = 0
         try:
             while i != float("inf"):
@@ -156,9 +156,24 @@ def parse (string: str) -> str:
                 i += 1
         except (TypeError, ValueError):
             return string
+        
+    def replaceKeyword (string: str, old: str, new: str):
+        s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+        i = 0
+        try:
+            while i != float("inf"):
+                i = index(string, old, i)
+                while i != float("inf") and (string[i-1] in s or string[i+len(old)] in s):    
+                    i = index(string, old, i+1)
+                if i == float("inf"):
+                    return string
+                string = string[:i]+new+string[i+len(old):]
+                i += 1
+        except (TypeError, ValueError):
+            return string
 
     # Right Index While Ignoring Sub-Strings
-    def rindex (string: str, value: str, start: int = 0, end: int = -1):
+    def rindex (string: str, value: str, start: int = 0, end: int = -1) -> int:
         p = parseStrings(string)
         try:
             while True:
@@ -170,7 +185,7 @@ def parse (string: str) -> str:
             return float("inf")
 
     # Count Occurences While Ignoring Sub-Strings
-    def count (string: str, value: str, start: int = 0, stop: int = -1):
+    def count (string: str, value: str, start: int = 0, stop: int = -1) -> int:
         if start == float("inf"):
             return 0
         elif stop == float("inf"):
@@ -189,7 +204,7 @@ def parse (string: str) -> str:
         return c
     
     # Split While Ignoring Sub-Strings
-    def split (string: str, value: str):
+    def split (string: str, value: str) -> list[str]:
         try:
             p = parseStrings(string)
             l = []
@@ -208,7 +223,7 @@ def parse (string: str) -> str:
         return l + [string[last_i:]]
     
     # Get Opening Brace ('{') Given Closing Index
-    def getOpen (string: str, cl: int):
+    def getOpen (string: str, cl: int) -> int:
         if string[cl] != "}":
             raise ValueError("Opening Index is not a closing brace ('}')")
         count = -1
@@ -226,7 +241,7 @@ def parse (string: str) -> str:
         return cl
     
     # Get Closing Brace ('}') Given Opening Index
-    def getClose (string: str, op: int):
+    def getClose (string: str, op: int) -> int:
         if string[op] != "{":
             raise ValueError("Opening Index is not an opening brace ('{')")
         count = 1
@@ -312,10 +327,10 @@ def parse (string: str) -> str:
     def extras (string: str) -> str:
         return replace(
             replace(
-                replace(
-                    replace(
+                replaceKeyword(
+                    replaceKeyword(
                         replace(
-                            replace(string, "until", "while not ")
+                            replaceKeyword(string, "until", "while not ")
                             , "else if", "elif")
                         , "catch", "except")
                     , "throw", "raise")
@@ -327,6 +342,7 @@ def parse (string: str) -> str:
         string2 = string
         string = replace(replace(string2, "\n{", "{"), " {", "{")
     
+    # trim excess lines for readability
     def trim (string: str) -> str:
         i_prev_nl = 0
         i_nl = index(string, "\n")
@@ -393,7 +409,7 @@ def console (version: str, debug: bool = False) -> None:
 
 if __name__ == "__main__":
     import sys,  os
-    version = "1.0.0"
+    version = "1.0.1"
     sys.argv = [i.lower() if i[0] == "-" else i for i in sys.argv]
     if len(sys.argv) > 1:
         # bython -h | bython --help
