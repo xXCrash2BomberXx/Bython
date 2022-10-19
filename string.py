@@ -242,22 +242,31 @@ def parse (string: str) -> str:
     
     # Replace Do-While loops with standard While loops
     def doWhile (string: str) -> str:
+        s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
         i_do = index(string, "do")
+        while i_do != float("inf") and (string[i_do-1] in s or string[i_do+2] in s):
+            i_do = index(string, "do", i_do)
         while i_do != float("inf"):
             i_brace = index(string, "{", i_do)
             i_close = getClose(string, i_brace)
             i_while = index(string, "\n", i_close)
             string = string[:i_do]+"\nif True {"+string[i_brace+1:i_close-1]+"\n}\n"+string[i_close+1:i_while]+string[i_brace:i_close+1]+string[i_while+1:]
             i_do = index(string, "do")
+            while i_do != float("inf") and (string[i_do-1] in s or string[i_do+2] in s):
+                i_do = index(string, "do", i_do)
         return string
     
     def interface (string: str) -> str:
+        s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
         i_interface = index(string, "interface")
+        while i_interface != float("inf") and (string[i_interface-1] in s or string[i_interface+9] in s):
+            i_interface = index(string, "interface", i_interface)
         while i_interface != float("inf"):
             i_close = getClose(string, index(string, "{", i_interface))
-            string = string[:i_close]+'\ndef __init__ (self, *args, **kwargs){raise AbstractError("Cannot instantiate abstract class")}\n'+string[i_close:]
-            string = replace(string, "interface", "class")
+            string = string[:i_interface]+"class "+string[i_interface+9:i_close]+'\ndef __init__ (self, *args, **kwargs){raise AbstractError("Cannot instantiate abstract class")}\n'+string[i_close:]
             i_interface = index(string, "interface")
+            while i_interface != float("inf") and (string[i_interface-1] in s or string[i_interface+9] in s):
+                i_interface = index(string, "interface", i_interface)
         return string
     
     # Replace Braces (Filtering Dictionaries and Indeces)
@@ -318,7 +327,19 @@ def parse (string: str) -> str:
         string2 = string
         string = replace(replace(string2, "\n{", "{"), " {", "{")
     
-    return parseDec(parseInc(braces(interface(doWhile(extras(replace(parseComments(replace(string, "{", "{\n")), ";", "\n")))))))
+    def trim (string: str) -> str:
+        i_prev_nl = 0
+        i_nl = index(string, "\n")
+        while i_nl != float('inf'):
+            if not string[i_prev_nl:i_nl].strip():
+                string = string[:i_prev_nl]+string[i_nl:]
+                i_nl = index(string, "\n", i_prev_nl+1)
+            else:
+                i_prev_nl = i_nl
+                i_nl = index(string, "\n", i_nl+1)
+        return string
+    
+    return trim(parseDec(parseInc(braces(interface(doWhile(extras(replace(parseComments(replace(string, "{", "{\n")), ";", "\n"))))))))
 
 from timeit import default_timer
 import ast
@@ -425,9 +446,11 @@ if __name__ == "__main__":
                     with open(ofile, "w+") as f2:
                         try:
                             with open(os.path.dirname(os.path.realpath(__file__))+r"\utils.py", "r") as f3:
-                                f2.write(f3.read()+"\n"+total)
+                                f2.write(f3.read()+
+                                         '\nimport builtins\nclass AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})): pass\n'+
+                                         total)
                         except FileNotFoundError:
-                            f2.write(total)
+                            f2.write('import builtins\nclass AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})): pass\n'+total)
                 try:
                     timeit = default_timer()
                     var = exec_with_return(total)
