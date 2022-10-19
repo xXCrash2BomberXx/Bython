@@ -73,5 +73,3 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 # Minor Bugs
 - Type annotations, in general, can cause issues, so use them with caution. Hopefully, many should work
 - As with annotations, f-strings can also cause issues
-- Variables including the words `until`, `catch`, and `throw` in their names may cause errors
-  - This can be fixed by removing the functionality of such keywords by deleting the word `extras` from line 342
