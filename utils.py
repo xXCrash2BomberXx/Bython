@@ -28,6 +28,11 @@ class factory:
         self.val = val
 
 
+class PrivateMethodError (builtins.Exception, metaclass=builtins.type("PrivateMethodError", (builtins.type,), {"__repr__": lambda self: self.__name__})):
+    '''Exception when calling a private method outside the class's scope'''
+    __module__ = builtins.__name__
+
+
 # Hidden types
 dict_keys = builtins.type({}.keys())
 dict_values = builtins.type({}.values())
@@ -663,4 +668,35 @@ def dicts (cl: function) -> function:
                     raise builtins.AttributeError(f"{type(self).__name__!r} object has no attribute {attr!r}")
         cl2 = builtins.type(cl.__name__, cl.__bases__, {**builtins.dict(cl.__dict__), "__getitem__": __getitem__, "__getattribute__": __getattribute__})
         return cl2(*args, **kwargs)
+    return wrapper
+
+
+def Private (func: function) -> function:
+    '''
+    Prevent access to method outside of the class' scope.
+
+    Parameters
+    ----------
+    func : function
+        Function to be decorated.
+
+    Raises
+    ------
+    PrivateMethodError
+        The function being called is a Private Method.
+
+    Returns
+    -------
+    function
+        Decorated function.
+
+    '''
+    def wrapper (*args: tuple[duck], **kwargs: dict[str, duck]) -> function:
+        from inspect import stack
+        from sys import modules
+        cls = builtins.vars(modules[func.__module__])[func.__qualname__.split('.')[0]]
+        caller = stack()[1].function
+        if hasattr(cls, caller):
+            return func(*args, **kwargs)
+        raise PrivateMethodError(f"{func.__name__!r} is a Private Method of class {cls.__name__!r}")
     return wrapper
