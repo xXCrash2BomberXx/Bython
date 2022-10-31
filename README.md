@@ -62,6 +62,7 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 - The `factory` class has been added to make using the `init` wrapper even more user-friendly by allowing unique instantiations of data containers!
 - The `constants` wrapper has been added for when you want some members of a class to be constants
 - The `dicts` wrapper unifies the attributes and indeces of a class allowing both `instance["value"]` and `instance.value` to function identically
+- The `Private` wrapper allows Private Methods to be declared in Python by using stack checking
 
 # Small Changes/Additions To Keep In Mind
 - Use parentheses (`(`, `)`) around `lambda` functions
