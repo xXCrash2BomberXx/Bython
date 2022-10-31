@@ -671,7 +671,7 @@ def dicts (cl: function) -> function:
     return wrapper
 
 
-def Private (func: function) -> function:
+def private (func: function) -> function:
     '''
     Prevent access to method outside of the class' scope.
 
