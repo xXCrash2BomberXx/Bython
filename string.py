@@ -3,6 +3,7 @@ try:
 except ModuleNotFoundError:
     pass
 
+from functools import cache
 import builtins
 
 class AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})):
@@ -367,6 +368,7 @@ def convertExpr2Expression(Expr):
     result = ast.Expression(Expr.value, lineno=0, col_offset = 0)
     return result
 
+@cache
 def exec_with_return(code):
     code_ast = ast.parse("\n"+code)
     init_ast = deepcopy(code_ast)
@@ -398,8 +400,8 @@ def console (version: str, debug: bool = False) -> None:
                 var = exec_with_return(parse(total+"\n"))
                 if var != None:
                     print(f"< {var!r}")
-                    if debug:
-                        print(f"<< {default_timer()-timeit}s")
+                if debug:
+                    print(f"<< {default_timer()-timeit}s")
         except Exception as e:
             if type(e) == EOFError:
                 break
@@ -481,5 +483,5 @@ if __name__ == "__main__":
             else:
                 console(version, any(i in sys.argv[1:] for i in ["-d", "-t", "--debug", "--time", "--timer"]))
     else:
-        console(version, any(i in sys.argv[1:] for i in ["-d", "-t", "--debug", "--time", "--timer"]))
+        console(version)
         
