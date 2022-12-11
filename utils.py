@@ -329,7 +329,7 @@ def type(arg: duck, bases: builtins.tuple[builtins.type] = None, method: builtin
         return builtins.type(arg, bases, method)
     
 
-def isinstance(arg: duck, ty: builtins.type) -> builtins.bool:
+def isinstance(arg: duck, tys: builtins.type) -> builtins.bool:
     '''
     Whether the given argument 'arg' is of type 'ty'.
 
@@ -346,34 +346,59 @@ def isinstance(arg: duck, ty: builtins.type) -> builtins.bool:
         Whether the arg is of type ty.
 
     '''
+    def split(ty: builtins.type) -> builtins.list[builtins.type]:
+        '''
+        Split type into list of union types
+
+        Paramters
+        ----------
+        ty : type
+            Type to split
+
+        Returns
+        -------
+        list[type]
+            List of types split from unions
+
+        '''
+        ty = str(ty).split("|")
+        i = 0
+        while i < len(ty):
+            if ty[i].count("[") >= ty[i].count("]"):
+                i += 1
+            else:
+                ty = ty[:i-1]+[ty[i-1]+"|"+ty[i]]+ty[i+1:]
+        return [eval(i) for i in ty]
     try:
-        if builtins.isinstance(ty, (builtins.tuple, builtins.list, builtins.set)):
-            return builtins.any(isinstance(arg, t) for t in ty)
-        if builtins.isinstance(ty, builtins.type):
-            if "[" in builtins.str(ty):
-                ty = builtins.str(ty)
-            else:
-                ty = ty.__name__
-        ty = str(ty).replace(" ", "")
-        if builtins.type(arg).__name__ == ty or ty == duck.__name__:
-            return True
-        elif "[" in ty and builtins.type(arg).__name__ == ty[:ty.index("[")] and builtins.len(arg) == 0:
-            return True
-        elif builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set, builtins.dict)) and "[" not in ty and builtins.type(arg).__name__ == ty:
-            return True
-        elif builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set)) and builtins.type(arg).__name__ == ty[:ty.index("[")]:
-            if builtins.all(isinstance(i, ty[ty.index("[")+1:-1]) for i in arg):
+        for ty in split(tys):
+            if builtins.isinstance(ty, (builtins.tuple, builtins.list, builtins.set)):
+                return builtins.any(isinstance(arg, t) for t in ty)
+            if builtins.isinstance(ty, builtins.type):
+                if "[" in builtins.str(ty):
+                    ty = builtins.str(ty)
+                else:
+                    ty = ty.__name__
+            ty = str(ty).replace(" ", "")
+            if builtins.type(arg).__name__ == ty or ty == duck.__name__:
                 return True
-            else:
-                return False
-        elif builtins.isinstance(arg, builtins.dict) and builtins.type(arg).__name__ == ty[:ty.index("[")]:
-            if builtins.all(isinstance(i, ty[ty.index("[")+1:ty.index(",")]) and
-                   isinstance(arg[i], ty[ty.index(",")+1:-1]) for i in arg):
+            elif "[" in ty and builtins.type(arg).__name__ == ty[:ty.index("[")] and builtins.len(arg) == 0:
                 return True
+            elif builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set, builtins.dict)) and "[" not in ty and builtins.type(arg).__name__ == ty:
+                return True
+            elif builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set)) and builtins.type(arg).__name__ == ty[:ty.index("[")]:
+                if builtins.all(isinstance(i, ty[ty.index("[")+1:-1]) for i in arg):
+                    return True
+                else:
+                    pass
+            elif builtins.isinstance(arg, builtins.dict) and builtins.type(arg).__name__ == ty[:ty.index("[")]:
+                if builtins.all(isinstance(i, ty[ty.index("[")+1:ty.index(",")]) and
+                       isinstance(arg[i], ty[ty.index(",")+1:-1]) for i in arg):
+                    return True
+                else:
+                    pass
             else:
-                return False
-        else:
-            return False
+                pass
+        return False
     except builtins.ValueError:
         return False
 
