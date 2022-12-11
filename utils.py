@@ -361,6 +361,8 @@ def isinstance(arg: duck, tys: builtins.type) -> builtins.bool:
             List of types split from unions
 
         '''
+        if "<" in str(ty):
+            return [ty]
         ty = str(ty).split("|")
         i = 0
         while i < len(ty):
