@@ -462,13 +462,16 @@ if __name__ == "__main__":
                     except IndexError:
                         ofile = os.path.splitext(ifile)[0]+".py"
                     with open(ofile, "w+") as f2:
-                        try:
-                            with open(os.path.dirname(os.path.realpath(__file__))+r"\utils.py", "r") as f3:
-                                f2.write(f3.read()+
-                                         '\nimport builtins\nclass AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})): pass\n'+
-                                         total)
-                        except FileNotFoundError:
+                        if "--no-lib" in sys.argv:
                             f2.write('import builtins\nclass AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})): pass\n'+total)
+                        else:
+                            try:
+                                with open(os.path.dirname(os.path.realpath(__file__))+r"\utils.py", "r") as f3:
+                                    f2.write(f3.read()+
+                                             '\nimport builtins\nclass AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})): pass\n'+
+                                             total)
+                            except FileNotFoundError:
+                                f2.write('import builtins\nclass AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})): pass\n'+total)
                 try:
                     timeit = default_timer()
                     var = exec_with_return(total)
