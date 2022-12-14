@@ -40,15 +40,17 @@ More configurations can be found by running `bython -h`
   - `4--`->`4`
 - `until` loops have been added and function as a `while not` loop
 - `do-while` loops have been added and can be used as:
-    ```x=0;
+    ```
+    x=0;
     do {
         print(x);
         x++;
     } while x < 5;
 - `for` loop standard styling from languages such as C++ has been added and can be used as:
-    ```for (i=0; i < 5; i+=2) {
-            print(i);
-        }
+    ```
+    for (i=0; i < 5; i+=2) {
+        print(i);
+    }
 - The `interface` class declaration has also been added for classes you don't want instantiated
 - Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
