@@ -287,8 +287,11 @@ def parse (string: str) -> str:
                     assign = search("\(\s*([a-zA-Z][a-zA-Z0-9]*\s*=\s*[a-zA-Z0-9]*)?\s*;", string[find[0]:find[1]]).group()[1:]
                     condition = search(";\s*[a-zA-Z0-9]+\s*([<>=]{2}|(<|>)?)\s*[a-zA-Z0-9]+\s*;", string[find[0]:find[1]]).group()[1:-1]
                     modifier = search(";\s*([a-zA-Z0-9]*\s*[+-=]{2}\s*[a-zA-Z0-9]*)?\s*\)", string[find[0]:find[1]])
-                    close = getClose(string, find[1]-1)
-                    string = string[:find[0]]+f";{assign}while({condition}){{"+string[find[1]:close]+f";{modifier.group()[:-1]};"+string[close:]
+                    if modifier.group()[1:-1].strip()[:2] not in ("++", "--"):
+                        close = getClose(string, find[1]-1)
+                        string = string[:find[0]]+f";{assign}while({condition}){{"+string[find[1]:close]+f";{modifier.group()[:-1]};"+string[close:]
+                    else:
+                        string = string[:find[0]]+f";{assign}while({condition}){{{modifier.group()[:-1]};"+string[find[1]:]
                 else:
                     prev = find[1]
             except AttributeError:
