@@ -46,11 +46,12 @@ More configurations can be found by running `bython -h`
         print(x);
         x++;
     } while x < 5;
-- `for` loop standard styling from languages such as C++ has been added and can be used as:
+- for-loop standard styling from languages such as C++ has been added and can be used as:
     ```
     for (i=0; i < 5; i+=2) {
         print(i);
     }
+- Unique for-loop behavior has been implemented to make prefix and postfix operators influence the order of incrementation and loop checks making `for(i=0;i<5;i++)` have the values `[0, 1, 2, 3, 4]` while `for(i=0;i<5;++i)` have the values `[1, 2, 3, 4, 5]`
 - The `interface` class declaration has also been added for classes you don't want instantiated
 - Along with the `and`, `or`, `raise`, `except`, and `elif` keywords, `&&`, `||`, `throw`, `catch`, and `else if` have also been implemented respectively
 - Comments can now be declared with `//` for single line comments and `/*` to open multiline comments and `*/` to close them
