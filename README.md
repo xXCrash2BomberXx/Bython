@@ -71,6 +71,33 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 - The `dicts` wrapper unifies the attributes and indeces of a class allowing both `instance["value"]` and `instance.value` to function identically
 - The `private` wrapper allows Private Methods to be declared in Python by using stack checking
 
+# What is the `overloads` package?
+- The `overloads` package contains a new utility that utilizes the `utils` package. The package adds the ability to overload class instance methods with the new typing utilities from `utils` with complete type depth!
+```
+class Test(metaclass=OverloadMeta):
+        @overload
+        def test(self, x: int):
+            print("Passed an integer")
+        @overload
+        def test(self, x: str):
+            print("Passed a string")
+        @overload
+        def test(self, x: list[int]):
+            print("Passed a list of integers")
+        @overload
+        def test(self, x: list[str]):
+            print("Passed a list of strings")
+        @overload
+        def test(self, x: duck):
+            print("Passed other")
+        @overload
+        def test(self, *x: int):
+            print("Passed integers")
+        @overload
+        def test(self, *x: duck):
+            print("Passed others")
+```
+
 # Small Changes/Additions To Keep In Mind
 - Use parentheses (`(`, `)`) around `lambda` functions
 - Use parentheses (`(`, `)`) around `until` loop conditions
