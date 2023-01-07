@@ -1,5 +1,6 @@
 try:
     from utils import *
+    from overloads import OverloadMeta, overload
 except ModuleNotFoundError:
     pass
 
