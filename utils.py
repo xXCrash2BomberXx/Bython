@@ -439,19 +439,13 @@ def vars(func: function, f: builtins.bool = True, r: builtins.bool = True) -> bu
             d[i]["value"] = func.__kwdefaults__[i]
     except builtins.TypeError:
         pass
-    # Has both collection arguments
-    if builtins.len(builtins.list(d)) >= 3 and "value" in d[builtins.list(d)[-3]] and "value" not in d[builtins.list(d)[-2]] and "value" not in d[builtins.list(d)[-1]]:
+    if func.__code__.co_flags & CO_VARARGS and func.__code__.co_flags & CO_VARKEYWORDS:  # *args & **kwargs
         d[builtins.list(d)[-2]]["collection"] = "*"
         d[builtins.list(d)[-1]]["collection"] = "**"
     elif func.__code__.co_flags & CO_VARARGS:  # *args
         d[builtins.list(d)[-1]]["collection"] = "*"
     elif func.__code__.co_flags & CO_VARKEYWORDS:  # **kwargs
         d[builtins.list(d)[-1]]["collection"] = "**"
-    elif "value" in d[builtins.list(d)[-1]]:  # Exclude no collection arguments
-        pass
-    # Exclude no keyword nor collection arguments
-    elif "value" not in d[builtins.list(d)[0]]:
-        pass
 
     if "return" in func.__annotations__:
         d["return"] = {}
