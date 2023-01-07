@@ -73,6 +73,7 @@ The `utils` contains small utilities to make Python, and by extension Bython, mo
 
 # What is the `overloads` package?
 - The `overloads` package contains a new utility that utilizes the `utils` package. The package adds the ability to overload class instance methods with the new typing utilities from `utils` with complete type depth!
+- A quick example can be seen below. Depending on the type of the arguments passed in, a different method will be called!
 ```
 class Test(metaclass=OverloadMeta):
         @overload
