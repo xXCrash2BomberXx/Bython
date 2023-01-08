@@ -717,7 +717,15 @@ def private (func: function) -> function:
         from sys import modules
         cls = builtins.vars(modules[func.__module__])[func.__qualname__.split('.')[0]]
         caller = stack()[1].function
-        if hasattr(cls, caller):
+        if cls is wrapper:
+            raise PrivateMethodError(f"{func.__name__!r} is a Private Method in the Main")
+        if hasattr(cls, caller):  # not decorated class container
+            return func(*args, **kwargs)
+        try:
+            c = cls()  # Empty init
+        except Exception as e:
+            c = cls(*([0]*int(str(e).split("missing")[1].split("required")[0])))  # fill with empty parameters
+        if hasattr(c, caller):  # Decorated class container
             return func(*args, **kwargs)
         raise PrivateMethodError(f"{func.__name__!r} is a Private Method of class {cls.__name__!r}")
     return wrapper
