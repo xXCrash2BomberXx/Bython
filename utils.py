@@ -1,36 +1,26 @@
 import builtins
 
 
-class AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError", (builtins.type,), {"__repr__": lambda self: self.__name__})):
-    '''Raised when trying to instantiate an abstract class'''
-    pass
-
-
 class duck (builtins.type, metaclass=builtins.type("duck", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Typing for variables without a strict typing class'''
-    __module__ = builtins.__name__
 
 
 class local (builtins.type, metaclass=builtins.type("local", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Typing for localized variables only used as helpers within a function's scope'''
-    __module__ = builtins.__name__
 
 
-class const (builtins.list, metaclass=builtins.type("const", (builtins.type,), {"__repr__": lambda self: self.__name__})):
-    '''Typing for constant static members using the 'init' decorator'''
-    __module__ = builtins.__name__
+class const (builtins.type, metaclass=builtins.type("const", (builtins.type,), {"__repr__": lambda self: self.__name__})):
+    '''Typing for constant members using the 'init' decorator'''
 
 
 class factory:
     '''Functional class to instantiate unqiue values for noramlly fixed values of static class variables'''
-
     def __init__(self, val: duck = None):
         self.val = val
 
 
 class PrivateMethodError (builtins.Exception, metaclass=builtins.type("PrivateMethodError", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Exception when calling a private method outside the class's scope'''
-    __module__ = builtins.__name__
 
 
 # Hidden types
@@ -44,7 +34,7 @@ from io import TextIOWrapper
 file = TextIOWrapper
 
 
-def flatten(array: builtins.list) -> builtins.list:
+def flatten(array: builtins.list, /) -> builtins.list:
     for i in builtins.range(builtins.len(array)):
         if builtins.isinstance(array[i], builtins.list):
             array = array[:i]+flatten(array[i])+array[i+1:]
@@ -52,8 +42,6 @@ def flatten(array: builtins.list) -> builtins.list:
 
 
 class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__repr__": lambda self: self.__name__})):
-    __module__ = builtins.__name__
-
     def __init__(self: set, *args: duck, duplicates: builtins.bool = False, strict: builtins.bool = False, **kwargs: duck) -> None:
         builtins.super(set, self).__init__()
         self._strict = strict
@@ -233,18 +221,14 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
         return None
 
 
-def copy(arg: duck, trial: builtins.bool = False, quick: builtins.bool = False) -> duck:
+def copy(arg: duck, /) -> duck:
     '''
-    Optimized copy function for speed that further attempts to clone functions unlike the standard library.
+    Optimized copy function for speed that further attempts to clone functions and classes unlike the standard library.
 
     Parameters
     ----------
     arg : duck
         argument to copy.
-    trial : bool, optional
-        Attempt to deep-copy a function/method. The default is False.
-    quick : bool, optional
-        Skip deep-copying class methods. The default is False.
 
     Returns
     -------
@@ -257,25 +241,20 @@ def copy(arg: duck, trial: builtins.bool = False, quick: builtins.bool = False) 
     elif builtins.isinstance(arg, builtins.dict):
         return builtins.type(arg)({i: copy(arg[i]) for i in arg})
     elif builtins.isinstance(arg, function):
-        if trial:
-            d = {}
-            for i in builtins.dir(arg):
-                try:
-                    d[i] = copy(arg.__getattribute__(i))
-                except builtins.TypeError:
-                    d[i] = arg.__getattribute__(i)
-            return builtins.type(arg.__name__, builtins.tuple(), d)()
-        elif not quick:
-            return builtins.type(arg.__name__, builtins.tuple(), {i: arg.__getattribute__(i) for i in builtins.dir(arg)})()
-        else:
-            return arg
+        d = {}
+        for i in builtins.dir(arg):
+            try:
+                d[i] = copy(arg.__getattribute__(i))
+            except builtins.TypeError:
+                d[i] = arg.__getattribute__(i)
+        return builtins.type(arg.__name__, builtins.tuple(), d)()
     elif builtins.hasattr(arg, "__dict__") or builtins.hasattr(arg, "__slots__"):
         return builtins.type(builtins.type(arg).__name__, builtins.type(arg).__bases__, builtins.dict(copy(arg.__dict__)))()
     else:
         return arg
-    
 
-def type(arg: duck, bases: builtins.tuple[builtins.type] = None, method: builtins.dict[builtins.str, function] = None) -> builtins.type:
+
+def type(arg: duck, /, bases: builtins.tuple[builtins.type] = None, method: builtins.dict[builtins.str, function] = None) -> builtins.type:
     '''
     The deep-typing of the value passed in.
 
@@ -329,7 +308,7 @@ def type(arg: duck, bases: builtins.tuple[builtins.type] = None, method: builtin
         return builtins.type(arg, bases, method)
     
 
-def isinstance(arg: duck, tys: builtins.type) -> builtins.bool:
+def isinstance(arg: duck, tys: builtins.type, /) -> builtins.bool:
     '''
     Whether the given argument 'arg' is of type 'ty'.
 
@@ -405,7 +384,7 @@ def isinstance(arg: duck, tys: builtins.type) -> builtins.bool:
         return False
 
 
-def vars(func: function, f: builtins.bool = True, r: builtins.bool = True) -> builtins.dict[builtins.str, builtins.type]:
+def vars(func: function, /, f: builtins.bool = True, r: builtins.bool = True) -> builtins.dict[builtins.str, builtins.type]:
     '''
     The variables used within the parameters and scope of the given function. 
 
@@ -464,7 +443,7 @@ def vars(func: function, f: builtins.bool = True, r: builtins.bool = True) -> bu
     }
 
 
-def annotate(func: function) -> function:
+def annotate(func: function, /) -> function:
     '''
     Validate input into a function matches the typing annotations given.
 
@@ -548,7 +527,7 @@ def annotate(func: function) -> function:
     return wrapper
 
 
-def init(cl: function) -> function:
+def init(cl: function, /) -> function:
     '''
     Automatically generate the '__init__' section of a class based on type annotations of the static members.
 
@@ -620,7 +599,7 @@ def init(cl: function) -> function:
     return wrapper
 
 
-def constants (cl: function) -> function:
+def constants (cl: function, /) -> function:
     '''
     Prevent modification of instance attributes marked as 'const'
 
@@ -650,7 +629,7 @@ def constants (cl: function) -> function:
     return wrapper
 
 
-def dicts (cl: function) -> function:
+def dicts (cl: function, /) -> function:
     '''
     Allow access of instance attributes and items interchangeably
 
@@ -692,7 +671,7 @@ def dicts (cl: function) -> function:
     return wrapper
 
 
-def private (func: function) -> function:
+def private (func: function, /) -> function:
     '''
     Prevent access to method outside of the class' scope.
 
