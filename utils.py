@@ -3,24 +3,29 @@ import builtins
 
 class duck (builtins.type, metaclass=builtins.type("duck", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Typing for variables without a strict typing class'''
+    __slots__ = tuple()
 
 
 class local (builtins.type, metaclass=builtins.type("local", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Typing for localized variables only used as helpers within a function's scope'''
+    __slots__ = tuple()
 
 
-class const (builtins.type, metaclass=builtins.type("const", (builtins.type,), {"__repr__": lambda self: self.__name__})):
+class const (builtins.list, metaclass=builtins.type("const", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Typing for constant members using the 'init' decorator'''
+    __slots__ = tuple()
 
 
 class factory:
     '''Functional class to instantiate unqiue values for noramlly fixed values of static class variables'''
+    __slots__ = ("val",)
     def __init__(self, val: duck = None):
         self.val = val
 
 
 class PrivateMethodError (builtins.Exception, metaclass=builtins.type("PrivateMethodError", (builtins.type,), {"__repr__": lambda self: self.__name__})):
     '''Exception when calling a private method outside the class's scope'''
+    __slots__ = tuple()
 
 
 # Hidden types
@@ -28,7 +33,7 @@ dict_keys = builtins.type({}.keys())
 dict_values = builtins.type({}.values())
 function = builtins.type(lambda: 0)
 generator = builtins.type(i for i in [])
-builtin_function_or_method = builtins.type(abs)
+builtin_function_or_method = builtins.type(builtins.abs)
 module = builtins.type(builtins)
 from io import TextIOWrapper
 file = TextIOWrapper
@@ -270,45 +275,30 @@ def type(arg: duck, /, bases: builtins.tuple[builtins.type] = None, method: buil
 
     '''
     if bases == None and method == None:
-        s: builtins.str = builtins.type(arg).__name__
-        if builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set, builtins.dict)):
-            try:
-                if builtins.all(type(i) == type(builtins.list(arg)[0]) for i in arg):
-                    temp = type(builtins.list(arg)[0])
-                    s += "[" + (temp.__name__ if "[" not in builtins.str(temp)
-                                else builtins.str(temp))
-                else:
-                    s += "[" + duck.__name__
-            except builtins.IndexError:
-                pass
-            if builtins.isinstance(arg, builtins.dict):
-                try:
-                    if builtins.all(type(arg[i]) == type(arg[builtins.list(arg)[0]]) for i in arg):
-                        temp = type(arg[builtins.list(arg)[0]])
-                        s += ", " + \
-                            (temp.__name__ if "[" not in builtins.str(
-                                temp) else builtins.str(temp)) + "]"
-                    else:
-                        s += ", " + duck.__name__ + "]"
-                except builtins.IndexError:
-                    pass
+        if builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set)):
+            from types import GenericAlias
+            if builtins.all(type(i) == type(builtins.list(arg)[0]) for i in arg):
+                return GenericAlias(builtins.type(arg), type(arg[0]))
             else:
-                if builtins.len(arg) != 0:
-                    s += "]"
-            try:
-                return builtins.eval(s)
-            except builtins.NameError:
-                return s
+                return GenericAlias(builtins.type(arg), duck)
+        elif builtins.isinstance(arg, builtins.dict):
+            from types import GenericAlias
+            if builtins.all(builtins.type(i) == builtins.type(builtins.list(arg.keys())[0]) for i in arg.keys()):
+                t1 = builtins.type(list(arg.keys())[0])
+            else:
+                t1 = duck
+            if builtins.all(type(i) == type(builtins.list(arg.values())[0]) for i in arg.values()):
+                t2 = type(list(arg.values())[0])
+            else:
+                t2 = duck
+            return GenericAlias(builtins.type(arg), (t1, t2))
         else:
-            try:
-                return builtins.eval(s)
-            except builtins.NameError:
-                return s
+            return builtins.type(arg)
     else:
         return builtins.type(arg, bases, method)
-    
 
-def isinstance(arg: duck, tys: builtins.type, /) -> builtins.bool:
+
+def isinstance(arg: duck, ty: builtins.type|builtins.tuple, /) -> builtins.bool:
     '''
     Whether the given argument 'arg' is of type 'ty'.
 
@@ -325,63 +315,24 @@ def isinstance(arg: duck, tys: builtins.type, /) -> builtins.bool:
         Whether the arg is of type ty.
 
     '''
-    def split(ty: builtins.type) -> builtins.list[builtins.type]:
-        '''
-        Split type into list of union types
-
-        Paramters
-        ----------
-        ty : type
-            Type to split
-
-        Returns
-        -------
-        list[type]
-            List of types split from unions
-
-        '''
-        if "<" in str(ty):
-            return [ty]
-        ty = str(ty).split("|")
-        i = 0
-        while i < len(ty):
-            if ty[i].count("[") >= ty[i].count("]"):
-                i += 1
+    if builtins.type(ty) == builtins.tuple:
+        return builtins.any(isinstance(arg, i) for i in ty)
+    else:
+        if ty == duck:
+            return True
+        if builtins.hasattr(ty, "__origin__") and builtins.hasattr(ty, "__args__"):  # GenericAlias
+            if builtins.type(arg) == ty.__origin__:
+                if builtins.isinstance(arg, builtins.dict) and len(ty.__args__) == 2:
+                    return (builtins.all(isinstance(i, ty.__args__[0]) for i in arg.keys()) and 
+                            builtins.all(isinstance(i, ty.__args__[1]) for i in arg.values()))
+                else:
+                    return builtins.all(isinstance(i, ty.__args__[0]) for i in arg)
             else:
-                ty = ty[:i-1]+[ty[i-1]+"|"+ty[i]]+ty[i+1:]
-        return [eval(i) for i in ty]
-    try:
-        for ty in split(tys):
-            if builtins.isinstance(ty, (builtins.tuple, builtins.list, builtins.set)):
-                return builtins.any(isinstance(arg, t) for t in ty)
-            if builtins.isinstance(ty, builtins.type):
-                if "[" in builtins.str(ty):
-                    ty = builtins.str(ty)
-                else:
-                    ty = ty.__name__
-            ty = str(ty).replace(" ", "")
-            if builtins.type(arg).__name__ == ty or ty == duck.__name__:
-                return True
-            elif "[" in ty and builtins.type(arg).__name__ == ty[:ty.index("[")] and builtins.len(arg) == 0:
-                return True
-            elif builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set, builtins.dict)) and "[" not in ty and builtins.type(arg).__name__ == ty:
-                return True
-            elif builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set)) and builtins.type(arg).__name__ == ty[:ty.index("[")]:
-                if builtins.all(isinstance(i, ty[ty.index("[")+1:-1]) for i in arg):
-                    return True
-                else:
-                    pass
-            elif builtins.isinstance(arg, builtins.dict) and builtins.type(arg).__name__ == ty[:ty.index("[")]:
-                if builtins.all(isinstance(i, ty[ty.index("[")+1:ty.index(",")]) and
-                       isinstance(arg[i], ty[ty.index(",")+1:-1]) for i in arg):
-                    return True
-                else:
-                    pass
-            else:
-                pass
-        return False
-    except builtins.ValueError:
-        return False
+                return False
+        elif builtins.hasattr(ty, "__args__"):  # UnionType
+            return builtins.any(isinstance(arg, i) for i in ty.__args__)
+        else:
+            return builtins.type(arg) == ty
 
 
 def vars(func: function, /, f: builtins.bool = True, r: builtins.bool = True) -> builtins.dict[builtins.str, builtins.type]:
@@ -530,6 +481,13 @@ def annotate(func: function, /) -> function:
 def init(cl: function, /) -> function:
     '''
     Automatically generate the '__init__' section of a class based on type annotations of the static members.
+    '__strict__' can be used to turn off automatic casting. When an improper type is passed as an argument,
+    having the '__strict__' property as false or omitting it completely will make python attempt to cast the
+    desired type. By adding the property and assigning the value True to it, the automatic casting
+    will be disabled and errors will be thrown for improper types being passed.
+    
+    NOTE: Do not annotate the '__strict__' property
+    WARNING: Constant members are only constant during initial instantiation and are advised to be placed last
 
     Parameters
     ----------
@@ -561,7 +519,7 @@ def init(cl: function, /) -> function:
             try:
                 name = builtins.list(builtins.filter(lambda i: i not in builtins.list(
                     kwargs), builtins.list(temp.__annotations__)))[arg]
-                if temp.__annotations__[name].__name__ == const.__name__:
+                if temp.__annotations__[name] == const or builtins.hasattr(temp.__annotations__[name], "__origin__") and temp.__annotations__[name].__origin__ == const:
                     raise builtins.TypeError(f"{name!r} is a constant argument")
                 temp.__setattr__(name, args[arg])
             except builtins.IndexError:
@@ -573,9 +531,8 @@ def init(cl: function, /) -> function:
                     len(args)+len(kwargs)+1
                     }''')
         for i in temp.__annotations__:
-            if '[' in builtins.str(temp.__annotations__[i]) and const.__name__ in builtins.str(temp.__annotations__[i]):
-                temp.__annotations__[i] = builtins.eval(builtins.str(temp.__annotations__[
-                                               i]).replace(const.__name__+"[", "")[:-1])
+            if builtins.hasattr(temp.__annotations__[i], "__origin__") and (temp.__annotations__[i] == const or temp.__annotations__[i].__origin__ == const):
+                temp.__annotations__[i] = temp.__annotations__[i].__args__[0]
             elif temp.__annotations__[i] == const:
                 temp.__annotations__[i] = duck
             if not builtins.hasattr(temp, i):
@@ -584,17 +541,16 @@ def init(cl: function, /) -> function:
             if isinstance(temp.__getattribute__(i), factory):
                 temp.__setattr__(i, copy(temp.__getattribute__(i).val))
             if not isinstance(temp.__getattribute__(i), temp.__annotations__[i]):
-                if temp.__annotations__[i].__name__ != duck.__name__:
-                    if builtins.hasattr(cl, "__strict__") and cl.__strict__:
-                        t = type(temp.__getattribute__(i))
-                        raise builtins.TypeError(f"""Argument '{i}' expected type '{
-                            temp.__annotations__[i].__name__ if '[' not in str(temp.__annotations__[i]) else str(temp.__annotations__[i])
-                            }', got type '{
-                            t.__name__ if '[' not in str(t) else str(t)
-                            }'""")
-                    else:
-                        temp.__setattr__(i, temp.__annotations__[
-                                         i](temp.__getattribute__(i)))
+                if builtins.hasattr(cl, "__strict__") and cl.__strict__:
+                    t = type(temp.__getattribute__(i))
+                    raise builtins.TypeError(f"""Argument '{i}' expected type '{
+                        temp.__annotations__[i].__name__ if '[' not in str(temp.__annotations__[i]) else str(temp.__annotations__[i])
+                        }', got type '{
+                        t.__name__ if '[' not in str(t) else str(t)
+                        }'""")
+                else:
+                    temp.__setattr__(i, temp.__annotations__[
+                                     i](temp.__getattribute__(i)))
         return temp
     return wrapper
 
@@ -621,7 +577,8 @@ def constants (cl: function, /) -> function:
     '''
     def wrapper (*args: builtins.tuple[duck], **kwargs: builtins.dict[builtins.str, duck]) -> builtins.object:
         def __setattr__ (self: builtins.object, attr: builtins.str, val: duck) -> None:
-            if builtins.hasattr(self, attr) and builtins.hasattr(self, "__annotations__") and attr in self.__annotations__ and isinstance(self.__annotations__[attr], const):
+            if (builtins.hasattr(self, attr) and builtins.hasattr(self, "__annotations__") and attr in self.__annotations__ and 
+                (self.__annotations__[attr] == const or self.__annotations__[attr].__origin__ == const)):
                 raise builtins.ValueError(f"Cannot reassign constant value {attr!r}")
             return builtins.super(cl2, self).__setattr__(attr, val)
         cl2 = builtins.type(cl.__name__, cl.__bases__, {**builtins.dict(cl.__dict__), "__setattr__": __setattr__})
@@ -698,13 +655,13 @@ def private (func: function, /) -> function:
         caller = stack()[1].function
         if cls is wrapper:
             raise PrivateMethodError(f"{func.__name__!r} is a Private Method in the Main")
-        if hasattr(cls, caller):  # not decorated class container
+        if builtins.hasattr(cls, caller):  # not decorated class container
             return func(*args, **kwargs)
         try:
             c = cls()  # Empty init
         except Exception as e:
             c = cls(*([0]*int(str(e).split("missing")[1].split("required")[0])))  # fill with empty parameters
-        if hasattr(c, caller):  # Decorated class container
+        if builtins.hasattr(c, caller):  # Decorated class container
             return func(*args, **kwargs)
         raise PrivateMethodError(f"{func.__name__!r} is a Private Method of class {cls.__name__!r}")
     return wrapper
