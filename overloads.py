@@ -1,6 +1,4 @@
-from utils import local
-from utils import isinstance
-from utils import vars
+from utils import local, isinstance, vars
 import builtins
 
 _MISSING = object()
@@ -126,3 +124,41 @@ class BoundOverloadDispatcher:
             return super_call(*args, **kwargs)
         else:
             raise NoMatchingOverload()
+
+
+if __name__ == "__main__":
+    
+    from utils import duck
+
+    class Test(metaclass=OverloadMeta):
+        @overload
+        def test(self, x: int):
+            print("Passed an integer")
+        @overload
+        def test(self, x: str):
+            print("Passed a string")
+        @overload
+        def test(self, x: list[int]):
+            print("Passed a list of integers")
+        @overload
+        def test(self, x: list[str]):
+            print("Passed a list of strings")
+        @overload
+        def test(self, x: duck):
+            print("Passed other")
+        @overload
+        def test(self, *x: int):
+            print("Passed integers")
+        @overload
+        def test(self, *x: duck):
+            print("Passed others")
+    Test().test(1)  # Passed an integer
+    Test().test("")  # Passed a string
+    Test().test([])  # Passed a list of integers
+    Test().test([1])  # Passed a list of integers
+    Test().test([""])  # Passed a list of strings
+    Test().test(True)  # Passed other
+    Test().test(None)  # Passed other
+    Test().test(1, 2)  # Passed integers
+    Test().test(True, False)  # Passed others
+    
