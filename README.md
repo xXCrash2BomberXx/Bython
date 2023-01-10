@@ -58,7 +58,7 @@ More configurations can be found by running `bython -h`
 
 # What is the `utils` package?
 The `utils` contains small utilities to make Python, and by extension Bython, more user-friendly. The package adds in "hidden" types that Python has but hides from the user along with faster, more useful and user friendly, or completely new functions that work in standard Python!
-- The `copy` function has been reworked to now copy entire classes, functions, and multi-dimensional lists and dictionaries, as well as featuring some new optional parameters if you don't want to take a slight performance drop with the deeper copying
+- The `copy` function has been reworked to now copy entire classes, functions, and multi-dimensional lists and dictionaries
 - The `set` data container has been completely remade to now be a blend of the best parts of lists and dictionaries while sporting an all new look without losing any of its original functionality
 - The `flatten` function has been added to take a multi-dimensional list and make it into a one-dimensional list
 - The builtin `type` function has been reworked to now be *much* more useful by giving deeper type descriptions
