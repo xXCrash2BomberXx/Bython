@@ -61,7 +61,7 @@ The `utils` package contains small utilities to make Python, and by extension By
 - The `copy` function has been reworked to now copy entire classes, functions, and multi-dimensional lists and dictionaries
 - The `set` data container has been completely remade to now be a blend of the best parts of lists and dictionaries while sporting an all new look without losing any of its original functionality
 - The `flatten` function has been added to take a multi-dimensional list and make it into a one-dimensional list
-- The builtin `type` function has been reworked to now be *much* more useful by giving deeper type descriptions such as `type({'a': [1, 2]})` returning `dict[str, list[int]]`
+- The builtin `type` function has been reworked to now be *much* more useful by giving deeper type descriptions such as `type({'a':[1,2]})` returning `dict[str,list[int]]`
 - The builtin `isinstance` function has also bee reworked to remove that pesky `isinstance(True, int)` from returning `True` while also now checking deeper typing such as `isinstance([1, "a"], list[int|str])`
 - The builtin `vars` function finally has something useful to do! The function now returns a `dict` of all variables used within the function it is used on
 - The `annotate` wrapper (used with functions and methods) has been added to enforce deep-typing annotations on the arguments of functions as well as constant members!
