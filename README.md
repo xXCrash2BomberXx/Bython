@@ -66,7 +66,7 @@ The `utils` package contains small utilities to make Python, and by extension By
 - The builtin `vars` function finally has something useful to do! The function now returns a `dict` of all variables used within the function it is used on such as `def func(x:int)->int:pass` returning `{'x':{'type':int},'return':{'type':int}}`
 - The `annotate` wrapper (used with functions and methods) has been added to enforce deep-typing annotations on the arguments of functions
 - The `init` wrapper (used with classes) has been added to build those annoying `init` methods of classes using simple annotations and default values
-- The `factory` class has been added to make using the `init` wrapper even more user-friendly by allowing unique instantiations of data containers
+- The `factory` class has been added to make using the `init` wrapper even more user-friendly by allowing unique instantiations of data containers by using the new `copy` function
 - The `constants` wrapper (used with classes) has been added for when you want some members of a class to be constants
 - The `dicts` wrapper (used with classes) unifies the attributes and indeces of a class allowing both `instance["value"]` and `instance.value` to function identically
 - The `private` wrapper (used with methods) allows Private Members to be declared in Python by using stack checking
