@@ -354,44 +354,47 @@ def vars(func: function, /, f: builtins.bool = True, r: builtins.bool = True) ->
         A dictionary containing the variables and their types within the scope of the function.
 
     '''
-    d: builtins.dict = {i: {} for i in func.__code__.co_varnames}
-    i: builtins.str
-    CO_VARARGS: builtins.int = 4
-    CO_VARKEYWORDS: builtins.int = 8
-
-    for i in func.__annotations__:
-        try:
-            d[i]["type"] = func.__annotations__[i]
-        except builtins.KeyError:
-            pass
     try:
-        for i in func.__kwdefaults__:
-            d[i]["value"] = func.__kwdefaults__[i]
-    except builtins.TypeError:
-        pass
-    if func.__code__.co_flags & CO_VARARGS and func.__code__.co_flags & CO_VARKEYWORDS:  # *args & **kwargs
-        d[builtins.list(d)[-2]]["collection"] = "*"
-        d[builtins.list(d)[-1]]["collection"] = "**"
-    elif func.__code__.co_flags & CO_VARARGS:  # *args
-        d[builtins.list(d)[-1]]["collection"] = "*"
-    elif func.__code__.co_flags & CO_VARKEYWORDS:  # **kwargs
-        d[builtins.list(d)[-1]]["collection"] = "**"
-
-    if "return" in func.__annotations__:
-        d["return"] = {}
-        d["return"]["type"] = func.__annotations__["return"]
-
-    for i in d:
-        if "type" not in d[i]:
-            d[i]["type"] = local  # duck
-
-    return d if not f else {
-        **builtins.dict(builtins.filter(lambda i: "collection" not in i[1] and "value" not in i[1] and i[0] != "return", d.items())),
-        **builtins.dict(builtins.filter(lambda i: i[1]["collection"] == "*", builtins.dict(builtins.filter(lambda i: "collection" in i[1] and "value" not in i[1] and i[0] != "return", d.items())).items())),
-        **builtins.dict(builtins.filter(lambda i: "collection" not in i[1] and "value" in i[1] and i[0] != "return", d.items())),
-        **builtins.dict(builtins.filter(lambda i: i[1]["collection"] == "**", builtins.dict(builtins.filter(lambda i: "collection" in i[1] and "value" not in i[1] and i[0] != "return", d.items())).items())),
-        **({} if "return" not in d or not r else {"return": d["return"]})
-    }
+        d: builtins.dict = {i: {} for i in func.__code__.co_varnames}
+        i: builtins.str
+        CO_VARARGS: builtins.int = 4
+        CO_VARKEYWORDS: builtins.int = 8
+    
+        for i in func.__annotations__:
+            try:
+                d[i]["type"] = func.__annotations__[i]
+            except builtins.KeyError:
+                pass
+        try:
+            for i in func.__kwdefaults__:
+                d[i]["value"] = func.__kwdefaults__[i]
+        except builtins.TypeError:
+            pass
+        if func.__code__.co_flags & CO_VARARGS and func.__code__.co_flags & CO_VARKEYWORDS:  # *args & **kwargs
+            d[builtins.list(d)[-2]]["collection"] = "*"
+            d[builtins.list(d)[-1]]["collection"] = "**"
+        elif func.__code__.co_flags & CO_VARARGS:  # *args
+            d[builtins.list(d)[-1]]["collection"] = "*"
+        elif func.__code__.co_flags & CO_VARKEYWORDS:  # **kwargs
+            d[builtins.list(d)[-1]]["collection"] = "**"
+    
+        if "return" in func.__annotations__:
+            d["return"] = {}
+            d["return"]["type"] = func.__annotations__["return"]
+    
+        for i in d:
+            if "type" not in d[i]:
+                d[i]["type"] = local  # duck
+    
+        return d if not f else {
+            **builtins.dict(builtins.filter(lambda i: "collection" not in i[1] and "value" not in i[1] and i[0] != "return", d.items())),
+            **builtins.dict(builtins.filter(lambda i: i[1]["collection"] == "*", builtins.dict(builtins.filter(lambda i: "collection" in i[1] and "value" not in i[1] and i[0] != "return", d.items())).items())),
+            **builtins.dict(builtins.filter(lambda i: "collection" not in i[1] and "value" in i[1] and i[0] != "return", d.items())),
+            **builtins.dict(builtins.filter(lambda i: i[1]["collection"] == "**", builtins.dict(builtins.filter(lambda i: "collection" in i[1] and "value" not in i[1] and i[0] != "return", d.items())).items())),
+            **({} if "return" not in d or not r else {"return": d["return"]})
+        }
+    except Exception:
+        return builtins.vars(func)
 
 
 def annotate(func: function, /) -> function:
