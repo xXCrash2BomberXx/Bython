@@ -1,9 +1,5 @@
 import builtins
-
-
-class duck (builtins.type, metaclass=builtins.type("duck", (builtins.type,), {"__repr__": lambda self: self.__name__})):
-    '''Typing for variables without a strict typing class'''
-    __slots__ = tuple()
+import typing
 
 
 class local (builtins.type, metaclass=builtins.type("local", (builtins.type,), {"__repr__": lambda self: self.__name__})):
@@ -19,7 +15,7 @@ class const (builtins.list, metaclass=builtins.type("const", (builtins.type,), {
 class factory:
     '''Functional class to instantiate unqiue values for noramlly fixed values of static class variables'''
     __slots__ = ("val",)
-    def __init__(self, val: duck = None):
+    def __init__(self, val: typing.Any = None):
         self.val = val
 
 
@@ -47,7 +43,7 @@ def flatten(array: builtins.list, /) -> builtins.list:
 
 
 class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__repr__": lambda self: self.__name__})):
-    def __init__(self: set, *args: duck, duplicates: builtins.bool = False, strict: builtins.bool = False, **kwargs: duck) -> None:
+    def __init__(self: builtins.set, *args: builtins.tuple[typing.Any], duplicates: builtins.bool = False, strict: builtins.bool = False, **kwargs: builtins.dict[builtins.str, typing.Any]) -> None:
         builtins.super(set, self).__init__()
         self._strict = strict
         self._duplicates = duplicates
@@ -63,7 +59,7 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
             self[name] = kwargs[name]
         return None
 
-    def __setattr__(self: set, name: builtins.str, value: duck) -> None:
+    def __setattr__(self: builtins.set, name: builtins.str, value: typing.Any) -> None:
         if (not builtins.any(i is value for i in self.list()) or self._duplicates) and name not in ("_duplicates", "_strict"):
             try:
                 self[name] = value
@@ -77,13 +73,13 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
             else:
                 return None
 
-    def __getattr__(self: set, name: builtins.str) -> duck:
+    def __getattr__(self: builtins.set, name: builtins.str) -> typing.Any:
         try:
             return self[name]
         except builtins.AttributeError:
             return builtins.super(set, self).__getattr__(name)
 
-    def __setitem__(self: set, name: builtins.str, value: duck) -> None:
+    def __setitem__(self: builtins.set, name: builtins.str, value: typing.Any) -> None:
         if (not builtins.any(i is value for i in self.list()) or self._duplicates) and name not in ("_duplicates", "_strict"):
             return builtins.super(set, self).__setitem__(name, value)
         elif name in ("_duplicates", "_strict"):
@@ -94,7 +90,7 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
             else:
                 return None
 
-    def __getitem__(self: set, key: builtins.int, index: builtins.bool = False) -> duck:
+    def __getitem__(self: builtins.set, key: builtins.int, index: builtins.bool = False) -> typing.Any:
         '''
         index:
             True: Start List; Backup Dictionary
@@ -117,7 +113,7 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
                 except builtins.IndexError:
                     raise builtins.KeyError(key)
 
-    def __repr__(self: set) -> builtins.str:
+    def __repr__(self: builtins.set) -> builtins.str:
         s = "{"
         keys = builtins.list(self.keys())
         values = builtins.list(self.values())
@@ -129,25 +125,25 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
             s += ", "
         return s[:-2]+"}" if builtins.len(s) > 1 else "{}"
 
-    def set(self: set) -> set:
+    def set(self: builtins.set) -> set:
         '''Set of Values'''
         return set(*builtins.list(self.values()))
 
-    def dict(self: set) -> builtins.dict:
+    def dict(self: builtins.set) -> builtins.dict:
         '''Full Dictionary Output'''
         return builtins.dict(self)
 
-    def list(self: set) -> builtins.list:
+    def list(self: builtins.set) -> builtins.list:
         '''List of Values'''
         return builtins.list(self.values())
 
-    def copy(self: set, *args: duck, **kwargs: duck) -> set:
+    def copy(self: builtins.set, *args: builtins.tuple[typing.Any], **kwargs: builtins.dict[builtins.str, typing.Any]) -> set:
         c = set(*args, **kwargs)
         for i in builtins.range(builtins.len(list(self.keys()))):
             c[builtins.list(self.keys())[i]] = builtins.list(self.values())[i]
         return c
 
-    def append(self: set, *args: duck, **kwargs: duck) -> None:
+    def append(self: builtins.set, *args: builtins.tuple[typing.Any], **kwargs: builtins.dict[builtins.str, typing.Any]) -> None:
         for name in kwargs:
             self[name] = kwargs[name]
         for i in builtins.range(builtins.len(args)):
@@ -160,18 +156,18 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
                     t += 1
         return None
 
-    def count(self: set, val: duck) -> builtins.int:
+    def count(self: builtins.set, val: typing.Any) -> builtins.int:
         return builtins.list(self.values()).count(val)
 
-    def extend(self: set, *args: duck) -> None:
+    def extend(self: builtins.set, *args: builtins.tuple[typing.Any]) -> None:
         for i in args:
             self.append(*i)
         return None
 
-    def index(self: set, val: duck) -> builtins.int:
+    def index(self: builtins.set, val: typing.Any) -> builtins.int:
         return builtins.list(self.keys())[builtins.list(self.values()).index(val)]
 
-    def insert(self: set, pos: builtins.int, elmnt: duck) -> None:
+    def insert(self: builtins.set, pos: builtins.int, elmnt: typing.Any) -> None:
         if pos not in self:
             self[pos] = elmnt
         else:
@@ -186,11 +182,11 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
                     break
         return None
 
-    def remove(self: set, val: duck) -> None:
+    def remove(self: builtins.set, val: typing.Any) -> None:
         self.pop(builtins.list(self.keys())[builtins.list(self.values()).index(val)])
         return None
 
-    def reverse(self: set) -> None:
+    def reverse(self: builtins.set) -> None:
         keys = list(self.keys())
         values = list(self.values())
         for i in builtins.range(builtins.len(keys)):
@@ -201,7 +197,7 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
     def _sort(array: builtins.list) -> None:
         return builtins.sorted(builtins.list(builtins.filter(lambda i: builtins.type(i) == builtins.bool, array)))+builtins.sorted(builtins.list(builtins.filter(lambda i: builtins.type(i) == builtins.str and not i.isdigit(), array)))+builtins.sorted(builtins.list(builtins.filter(lambda i: builtins.type(i) == builtins.str and i.isdigit(), array)), key=lambda t: builtins.int(t))+builtins.sorted(builtins.list(builtins.filter(lambda i: builtins.type(i) == builtins.int or builtins.type(i) == builtins.float, array)))
 
-    def sort(self: set) -> None:
+    def sort(self: builtins.set) -> None:
         keys = self._sort(builtins.list(self.keys()))
         values = self._sort(builtins.list(self.values()))
         self.clear()
@@ -209,7 +205,7 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
             self[keys[i]] = values[i]
         return None
 
-    def ksort(self: set) -> None:
+    def ksort(self: builtins.set) -> None:
         keys = self._sort(builtins.list(self.keys()))
         values = builtins.list(self.values())
         self.clear()
@@ -217,7 +213,7 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
             self[keys[i]] = values[i]
         return None
 
-    def vsort(self: set) -> None:
+    def vsort(self: builtins.set) -> None:
         keys = list(self.keys())
         values = self._sort(builtins.list(self.values()))
         self.clear()
@@ -226,18 +222,18 @@ class set(builtins.dict, metaclass=builtins.type("set", (builtins.type,), {"__re
         return None
 
 
-def copy(arg: duck, /) -> duck:
+def copy(arg: typing.Any, /) -> typing.Any:
     '''
     Optimized copy function for speed that further attempts to clone functions and classes unlike the standard library.
 
     Parameters
     ----------
-    arg : duck
+    arg : typing.Any
         argument to copy.
 
     Returns
     -------
-    duck
+    typing.Any
         A copy of argument arg.
 
     '''
@@ -259,13 +255,13 @@ def copy(arg: duck, /) -> duck:
         return arg
 
 
-def type(arg: duck, /, bases: builtins.tuple[builtins.type] = None, method: builtins.dict[builtins.str, function] = None) -> builtins.type:
+def type(arg: typing.Any, /, bases: builtins.tuple[builtins.type] = None, method: builtins.dict[builtins.str, function] = None) -> builtins.type:
     '''
     The deep-typing of the value passed in.
 
     Parameters
     ----------
-    arg : duck
+    arg : typing.Any
         Value to return the deep-typing of.
 
     Returns
@@ -280,17 +276,17 @@ def type(arg: duck, /, bases: builtins.tuple[builtins.type] = None, method: buil
             if builtins.all(type(i) == type(builtins.list(arg)[0]) for i in arg):
                 return GenericAlias(builtins.type(arg), type(arg[0]))
             else:
-                return GenericAlias(builtins.type(arg), duck)
+                return GenericAlias(builtins.type(arg), typing.Any)
         elif builtins.isinstance(arg, builtins.dict):
             from types import GenericAlias
             if builtins.all(builtins.type(i) == builtins.type(builtins.list(arg.keys())[0]) for i in arg.keys()):
                 t1 = builtins.type(list(arg.keys())[0])
             else:
-                t1 = duck
+                t1 = typing.Any
             if builtins.all(type(i) == type(builtins.list(arg.values())[0]) for i in arg.values()):
                 t2 = type(list(arg.values())[0])
             else:
-                t2 = duck
+                t2 = typing.Any
             return GenericAlias(builtins.type(arg), (t1, t2))
         else:
             return builtins.type(arg)
@@ -298,13 +294,13 @@ def type(arg: duck, /, bases: builtins.tuple[builtins.type] = None, method: buil
         return builtins.type(arg, bases, method)
 
 
-def isinstance(arg: duck, ty: builtins.type|builtins.tuple, /) -> builtins.bool:
+def isinstance(arg: typing.Any, ty: builtins.type|builtins.tuple[builtins.type], /) -> builtins.bool:
     '''
     Whether the given argument 'arg' is of type 'ty'.
 
     Parameters
     ----------
-    arg : duck
+    arg : typing.Any
         Argument to test the typing of.
     ty : type
         Type to compare arg against.
@@ -318,7 +314,7 @@ def isinstance(arg: duck, ty: builtins.type|builtins.tuple, /) -> builtins.bool:
     if builtins.type(ty) == builtins.tuple:
         return builtins.any(isinstance(arg, i) for i in ty)
     else:
-        if ty == duck:
+        if ty == typing.Any:
             return True
         if builtins.hasattr(ty, "__origin__") and builtins.hasattr(ty, "__args__"):  # GenericAlias
             if builtins.type(arg) == ty.__origin__:
@@ -384,7 +380,7 @@ def vars(func: function, /, f: builtins.bool = True, r: builtins.bool = True) ->
     
         for i in d:
             if "type" not in d[i]:
-                d[i]["type"] = local  # duck
+                d[i]["type"] = local  # typing.Any
     
         return d if not f else {
             **builtins.dict(builtins.filter(lambda i: "collection" not in i[1] and "value" not in i[1] and i[0] != "return", d.items())),
@@ -417,7 +413,7 @@ def annotate(func: function, /) -> function:
         Decorated function.
 
     '''
-    def wrapper(*args: builtins.tuple[duck], **kwargs: builtins.dict[builtins.str, duck]) -> builtins.object:
+    def wrapper(*args: builtins.tuple[typing.Any], **kwargs: builtins.dict[builtins.str, typing.Any]) -> builtins.object:
         def err(name: builtins.str, ntype: builtins.str, gtype: builtins.str) -> builtins.TypeError:
             raise builtins.TypeError("Argument {} expected type '{}', got type '{}'".format(
                 name, builtins.str(ntype), gtype))
@@ -508,7 +504,7 @@ def init(cl: function, /) -> function:
         Decorated class instance.
 
     '''
-    def wrapper(*args: builtins.tuple[duck], **kwargs: builtins.dict[builtins.str, duck]) -> builtins.object:
+    def wrapper(*args: builtins.tuple[typing.Any], **kwargs: builtins.dict[builtins.str, typing.Any]) -> builtins.object:
         temp = cl()
         for kwarg in kwargs:
             if kwarg in temp.__annotations__ or not builtins.hasattr(cl, "__strict__") or not cl.__strict__:
@@ -537,7 +533,7 @@ def init(cl: function, /) -> function:
             if builtins.hasattr(temp.__annotations__[i], "__origin__") and (temp.__annotations__[i] == const or temp.__annotations__[i].__origin__ == const):
                 temp.__annotations__[i] = temp.__annotations__[i].__args__[0]
             elif temp.__annotations__[i] == const:
-                temp.__annotations__[i] = duck
+                temp.__annotations__[i] = typing.Any
             if not builtins.hasattr(temp, i):
                 raise builtins.TypeError(
                     f"{cl.__name__} missing required argument {i!r}")
@@ -578,8 +574,8 @@ def constants (cl: function, /) -> function:
         Decorated class instance.
 
     '''
-    def wrapper (*args: builtins.tuple[duck], **kwargs: builtins.dict[builtins.str, duck]) -> builtins.object:
-        def __setattr__ (self: builtins.object, attr: builtins.str, val: duck) -> None:
+    def wrapper (*args: builtins.tuple[typing.Any], **kwargs: builtins.dict[builtins.str, typing.Any]) -> builtins.object:
+        def __setattr__ (self: builtins.object, attr: builtins.str, val: typing.Any) -> None:
             if (builtins.hasattr(self, attr) and builtins.hasattr(self, "__annotations__") and attr in self.__annotations__ and 
                 (self.__annotations__[attr] == const or self.__annotations__[attr].__origin__ == const)):
                 raise builtins.ValueError(f"Cannot reassign constant value {attr!r}")
@@ -609,7 +605,7 @@ def dicts (cl: function, /) -> function:
         Decorated class instance.
 
     '''
-    def wrapper (*args: builtins.tuple[duck], **kwargs: builtins.dict[builtins.str, duck]) -> builtins.object:
+    def wrapper (*args: builtins.tuple[typing.Any], **kwargs: builtins.dict[builtins.str, typing.Any]) -> builtins.object:
         def __getitem__ (self, attr):
             try:
                 return builtins.super(cl2, self).__getitem__(attr)
@@ -651,7 +647,7 @@ def private (func: function, /) -> function:
         Decorated function.
 
     '''
-    def wrapper (*args: tuple[duck], **kwargs: dict[str, duck]) -> function:
+    def wrapper (*args: builtins.tuple[typing.Any], **kwargs: builtins.dict[builtins.str, typing.Any]) -> function:
         from inspect import stack
         from sys import modules
         cls = builtins.vars(modules[func.__module__])[func.__qualname__.split('.')[0]]

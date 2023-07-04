@@ -128,7 +128,7 @@ class BoundOverloadDispatcher:
 
 if __name__ == "__main__":
     
-    from utils import duck
+    from typing import Any
 
     class Test(metaclass=OverloadMeta):
         @overload
@@ -144,13 +144,13 @@ if __name__ == "__main__":
         def test(self, x: list[str]):
             print("Passed a list of strings")
         @overload
-        def test(self, x: duck):
+        def test(self, x: Any):
             print("Passed other")
         @overload
         def test(self, *x: int):
             print("Passed integers")
         @overload
-        def test(self, *x: duck):
+        def test(self, *x: Any):
             print("Passed others")
     Test().test(1)  # Passed an integer
     Test().test("")  # Passed a string

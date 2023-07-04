@@ -12,9 +12,9 @@ class AbstractError (builtins.Exception, metaclass=builtins.type("AbstractError"
     pass
 
 # Compile Bython to Python
-def parse (string: str) -> str:
+def parse (string: builtins.str) -> builtins.str:
     # Count Backslashes Before End
-    def countBackslashes (string: str) -> int:
+    def countBackslashes (string: builtins.str) -> builtins.int:
         i = len(string)-1
         count = 0
         while i in range(len(string)) and string[i] == "\\":
@@ -23,7 +23,7 @@ def parse (string: str) -> str:
         return count
     
     # Find Sub-Strings
-    def parseStrings (string: str) -> list[list[int]]:
+    def parseStrings (string: builtins.str) -> builtins.list[builtins.list[builtins.int]]:
         i = 0
         o = None
         strings = []
@@ -51,7 +51,7 @@ def parse (string: str) -> str:
         return strings
     
     # Parse Increment Operators
-    def parseInc (string: str) -> str:
+    def parseInc (string: builtins.str) -> builtins.str:
         from re import match, search
         try:
             while True:
@@ -77,7 +77,7 @@ def parse (string: str) -> str:
         return string
     
     # Parse Decrement Operators
-    def parseDec (string: str) -> str:
+    def parseDec (string: builtins.str) -> builtins.str:
         from re import match, search
         try:
             while True:
@@ -103,7 +103,7 @@ def parse (string: str) -> str:
         return string
     
     # Removes Commments
-    def parseComments (string: str) -> str:
+    def parseComments (string: builtins.str) -> builtins.str:
         try:
             while True:
                 temp = index(string, "/*")
@@ -137,7 +137,7 @@ def parse (string: str) -> str:
         return string
     
     # Index While Ignoring Sub-Strings
-    def index (string: str, value: str, start: int = 0, end: int = -1) -> int:
+    def index (string: builtins.str, value: builtins.str, start: builtins.int = 0, end: builtins.int = -1) -> builtins.int:
         p = parseStrings(string)
         try:
             while True:
@@ -149,7 +149,7 @@ def parse (string: str) -> str:
             return float("inf")
 
     # Replace While Ignoring Sub-Strings
-    def replace (string: str, old: str, new: str) -> str:
+    def replace (string: builtins.str, old: builtins.str, new: builtins.str) -> builtins.str:
         i = 0
         try:
             while i != float("inf"):
@@ -159,7 +159,7 @@ def parse (string: str) -> str:
         except (TypeError, ValueError):
             return string
         
-    def replaceKeyword (string: str, old: str, new: str):
+    def replaceKeyword (string: builtins.str, old: builtins.str, new: builtins.str):
         s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
         i = 0
         try:
@@ -175,7 +175,7 @@ def parse (string: str) -> str:
             return string
 
     # Right Index While Ignoring Sub-Strings
-    def rindex (string: str, value: str, start: int = 0, end: int = -1) -> int:
+    def rindex (string: builtins.str, value: builtins.str, start: builtins.int = 0, end: builtins.int = -1) -> builtins.int:
         p = parseStrings(string)
         try:
             while True:
@@ -187,7 +187,7 @@ def parse (string: str) -> str:
             return float("inf")
 
     # Count Occurences While Ignoring Sub-Strings
-    def count (string: str, value: str, start: int = 0, stop: int = -1) -> int:
+    def count (string: builtins.str, value: builtins.str, start: builtins.int = 0, stop: builtins.int = -1) -> builtins.int:
         if start == float("inf"):
             return 0
         elif stop == float("inf"):
@@ -206,7 +206,7 @@ def parse (string: str) -> str:
         return c
     
     # Split While Ignoring Sub-Strings
-    def split (string: str, value: str) -> list[str]:
+    def split (string: builtins.str, value: builtins.str) -> builtins.list[builtins.str]:
         try:
             p = parseStrings(string)
             l = []
@@ -225,7 +225,7 @@ def parse (string: str) -> str:
         return l + [string[last_i:]]
     
     # Get Opening Brace ('{') Given Closing Index
-    def getOpen (string: str, cl: int) -> int:
+    def getOpen (string: builtins.str, cl: builtins.int) -> builtins.int:
         if string[cl] != "}":
             raise ValueError("Opening Index is not a closing brace ('}')")
         count = -1
@@ -243,7 +243,7 @@ def parse (string: str) -> str:
         return cl
     
     # Get Closing Brace ('}') Given Opening Index
-    def getClose (string: str, op: int) -> int:
+    def getClose (string: builtins.str, op: builtins.int) -> builtins.int:
         if string[op] != "{":
             raise ValueError("Opening Index is not an opening brace ('{')")
         count = 1
@@ -258,7 +258,7 @@ def parse (string: str) -> str:
         return op
     
     # Replace Do-While loops with standard While loops
-    def doWhile (string: str) -> str:
+    def doWhile (string: builtins.str) -> builtins.str:
         s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
         i_do = index(string, "do")
         while i_do != float("inf") and (string[i_do-1] in s or string[i_do+2] in s):
@@ -273,7 +273,7 @@ def parse (string: str) -> str:
                 i_do = index(string, "do", i_do)
         return string
     
-    def forLoop(string: str):
+    def forLoop(string: builtins.str):
         from re import search
         p = parseStrings(string)
         prev = 0
@@ -298,7 +298,7 @@ def parse (string: str) -> str:
             except AttributeError:
                 return string
     
-    def interface (string: str) -> str:
+    def interface (string: builtins.str) -> builtins.str:
         s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
         i_interface = index(string, "interface")
         while i_interface != float("inf") and (string[i_interface-1] in s or string[i_interface+9] in s):
@@ -312,7 +312,7 @@ def parse (string: str) -> str:
         return string
     
     # Replace Braces (Filtering Dictionaries and Indeces)
-    def braces (string: str) -> str:
+    def braces (string: builtins.str) -> builtins.str:
         try:
             i = 0
             while True:
@@ -351,7 +351,7 @@ def parse (string: str) -> str:
             pass
         return string
     
-    def extras (string: str) -> str:
+    def extras (string: builtins.str) -> builtins.str:
         return replace(
             replace(
                 replaceKeyword(
@@ -370,7 +370,7 @@ def parse (string: str) -> str:
         string = replace(replace(string2, "\n{", "{"), " {", "{")
     
     # trim excess lines for readability
-    def trim (string: str) -> str:
+    def trim (string: builtins.str) -> builtins.str:
         i_prev_nl = 0
         i_nl = index(string, "\n")
         while i_nl != float('inf'):
@@ -407,7 +407,7 @@ def exec_with_return(code):
     else:
         exec(compile(last_ast, "<ast>", "exec"), globals())
 
-def console (version: str, debug: bool = False) -> None:
+def console (version: builtins.str, debug: bool = False) -> None:
     print(f"Bython {version}\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.")
     while True:
         try:
