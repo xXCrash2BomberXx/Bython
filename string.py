@@ -244,16 +244,18 @@ def parse (string: builtins.str) -> builtins.str:
     
     # Get Closing Brace ('}') Given Opening Index
     def getClose (string: builtins.str, op: builtins.int) -> builtins.int:
-        if string[op] != "{":
+        if string[op] != "{" and string[op] != "[" and string[op] != "(":
             raise ValueError("Opening Index is not an opening brace ('{')")
+        opener = string[op]
+        closer = "}" if opener == "{" else "]" if opener == "[" else ")"
         count = 1
         while count != 0:
-            op = min(index(string, "}", op+1), index(string, "{", op+1))
+            op = min(index(string, opener, op+1), index(string, closer, op+1))
             if op == float("inf"):
                 raise SyntaxError()
-            elif string[op] == "{":
+            elif string[op] == opener:
                 count += 1
-            elif string[op] == "}":
+            elif string[op] == closer:
                 count -= 1
         return op
     
@@ -311,6 +313,18 @@ def parse (string: builtins.str) -> builtins.str:
                 i_interface = index(string, "interface", i_interface)
         return string
     
+    def commaInBraces(string: builtins.str, open: int, close: int) -> bool:
+        i = open
+        while i < close:
+            i2 = min(index(string, "{", i+1), index(string, "(", i+1), index(string, "[", i+1), close)
+            i = index(string, ",", i, i2)
+            if i != float("inf") and i < close:
+                return True
+            if (i2 == close):
+                break
+            i = getClose(string, i2)
+        return False
+    
     # Replace Braces (Filtering Dictionaries and Indeces)
     def braces (string: builtins.str) -> builtins.str:
         try:
@@ -318,24 +332,7 @@ def parse (string: builtins.str) -> builtins.str:
             while True:
                 i = index(string, "{", i)
                 cl = getClose(string, i)
-                ind = index(string, ",", i+1, cl)
-                ind2 = ind if ind != float("inf") else cl
-                if (
-                    # dict/set in scope
-                    index(string, "{", i+1, cl) < ind or 
-                    # lambda in dict
-                    count(string, "{", i+1, ind2) < count(string, "}", i+1, ind2) or 
-                    # index in scope
-                    index(string, "[", i+1, cl) < ind or 
-                    # lambda in index
-                    count(string, "[", i+1, ind2) < count(string, "]", i+1, ind2) or 
-                    # annotation in scope
-                    index(string, "(", i+1, cl) < ind or 
-                    # lambda in annotation
-                    count(string, "(", i+1, ind2) < count(string, ")", i+1, ind2) or 
-                    # standard scope
-                    cl < ind <= index(string, ",", i+1, cl) or
-                    False):
+                if not commaInBraces(string, i, cl):
                         if (string[i:cl+1].replace("\t", "").replace("\n", "") == "{}"):
                             string = string[:i]+": pass"+string[cl+1:]
                         else:
