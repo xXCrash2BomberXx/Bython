@@ -264,7 +264,7 @@ def parse (string: builtins.str) -> builtins.str:
         s = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
         i_do = index(string, "do")
         while i_do != float("inf") and (string[i_do-1] in s or string[i_do+2] in s):
-            i_do = index(string, "do", i_do)
+            i_do = index(string, "do", i_do+2)
         while i_do != float("inf"):
             i_brace = index(string, "{", i_do)
             i_close = getClose(string, i_brace)
