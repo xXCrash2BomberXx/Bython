@@ -282,14 +282,14 @@ def parse (string: builtins.str) -> builtins.str:
         while True:
             try:
                 find = search("for\s*\(\s*"+
-                           "([a-zA-Z][a-zA-Z0-9]*\s*=\s*[a-zA-Z0-9]*)?\s*;\s*"+
-                           "[a-zA-Z0-9]+\s*([<>=]{2}|(<|>)?)\s*[a-zA-Z0-9]+\s*;\s*"+
-                           "([a-zA-Z0-9]*\s*[+-=]{2}\s*[a-zA-Z0-9]*)?\s*"+
+                           "([_a-zA-Z][_a-zA-Z0-9]*\s*=\s*[_a-zA-Z0-9]*)?\s*;\s*"+
+                           "[_a-zA-Z0-9]+\s*([<>=]{2}|(<|>)?)\s*[_a-zA-Z0-9]+\s*;\s*"+
+                           "([_a-zA-Z0-9]*\s*[+-=]{2}\s*[_a-zA-Z0-9]*)?\s*"+
                            "\)\s*{", string[prev:]).span()
                 if not any(find[0] in range(*t) for t in p):
-                    assign = search("\(\s*([a-zA-Z][a-zA-Z0-9]*\s*=\s*[a-zA-Z0-9]*)?\s*;", string[find[0]:find[1]]).group()[1:]
-                    condition = search(";\s*[a-zA-Z0-9]+\s*([<>=]{2}|(<|>)?)\s*[a-zA-Z0-9]+\s*;", string[find[0]:find[1]]).group()[1:-1]
-                    modifier = search(";\s*([a-zA-Z0-9]*\s*[+-=]{2}\s*[a-zA-Z0-9]*)?\s*\)", string[find[0]:find[1]])
+                    assign = search("\(\s*([a-zA-Z][_a-zA-Z0-9]*\s*=\s*[_a-zA-Z0-9]*)?\s*;", string[find[0]:find[1]]).group()[1:]
+                    condition = search(";\s*[_a-zA-Z0-9]+\s*([<>=]{2}|(<|>)?)\s*[_a-zA-Z0-9]+\s*;", string[find[0]:find[1]]).group()[1:-1]
+                    modifier = search(";\s*([_a-zA-Z0-9]*\s*[+-=]{2}\s*[_a-zA-Z0-9]*)?\s*\)", string[find[0]:find[1]])
                     if modifier.group()[1:-1].strip()[:2] not in ("++", "--"):
                         close = getClose(string, find[1]-1)
                         string = string[:find[0]]+f";{assign}while({condition}){{"+string[find[1]:close]+f";{modifier.group()[:-1]};"+string[close:]
