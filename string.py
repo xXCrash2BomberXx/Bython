@@ -54,24 +54,24 @@ def parse (string: builtins.str) -> builtins.str:
     def parseInc (string: builtins.str) -> builtins.str:
         from re import match, search
         try:
-            while True:
-                i = index(string, "++")
+            i = 0
+            while i != float('inf'):
+                i = index(string, "++", i)
                 # ++x -> (x:=x+1)
-                if i != len(string)-1 and match(r"[_a-zA-Z0-9]", string[i+2]):
-                    variable = search(r"[_a-zA-Z0-9]*", string[i+2:]).group()
+                if i != len(string)-1 and match(r"^[^\S\r\n]*[_a-zA-Z0-9]+", string[i+2:]):
+                    variable = search(r"^[^\S\r\n]*[_a-zA-Z0-9]+", string[i+2:]).group()
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
                         string = replace(string, f"++{variable}", f"({variable}+1)", 1)
                     else:
                         string = replace(string, f"++{variable}", f"({variable}:={variable}+1)", 1)
                 # x++ -> (x:=x+1)-1
-                elif i != 0 and match(r"[_a-z-A-Z0-9]", string[i-1]):
-                    variable = search(r"[_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
+                elif i != 0 and match(r"^[^\S\r\n]*[_a-z-A-Z0-9]+", string[:i][::-1]):
+                    variable = search(r"^[^\S\r\n]*[_a-zA-Z0-9]+", string[:i][::-1]).group()[::-1]
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
                         string = replace(string, f"{variable}++", f"({variable})", 1)
                     else:
                         string = replace(string, f"{variable}++", f"(({variable}:={variable}+1)-1)", 1)
-                else:
-                    raise SyntaxError("Increment Operators must be called directly on the variable being incremented")
+                i += 2
         except (TypeError, ValueError):
             pass
         return string
@@ -80,24 +80,24 @@ def parse (string: builtins.str) -> builtins.str:
     def parseDec (string: builtins.str) -> builtins.str:
         from re import match, search
         try:
-            while True:
-                i = index(string, "--")
+            i = 0
+            while i != float('inf'):
+                i = index(string, "--", i)
                 # --x -> (x:=x-1)
-                if i != len(string)-1 and match(r"[_a-zA-Z0-9]", string[i+2]):
-                    variable = search(r"[_a-zA-Z0-9]*", string[i+2:]).group()
+                if i != len(string)-1 and match(r"^[^\S\r\n]*[_a-zA-Z0-9]+", string[i+2:]):
+                    variable = search(r"^[^\S\r\n]*[_a-zA-Z0-9]+", string[i+2:]).group()
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
                         string = replace(string, f"--{variable}", f"({variable}-1)", 1)
                     else:
                         string = replace(string, f"--{variable}", f"({variable}:={variable}-1)", 1)
                 # x-- -> (x:=x-1)+1
-                elif i != 0 and match(r"[_a-z-A-Z0-9]", string[i-1]):
-                    variable = search(r"[_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
+                elif i != 0 and match(r"^[^\S\r\n]*[_a-z-A-Z0-9]+", string[:i][::-1]):
+                    variable = search(r"^[^\S\r\n]*[_a-zA-Z0-9]+", string[:i][::-1]).group()[::-1]
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
                         string = replace(string, f"{variable}--", f"({variable})", 1)
                     else:
                         string = replace(string, f"{variable}--", f"(({variable}:={variable}-1)+1)", 1)
-                else:
-                    raise SyntaxError("Decrement Operators must be called directly on the variable being decremented")
+                i += 2
         except (TypeError, ValueError):
             pass
         return string
@@ -382,7 +382,7 @@ def parse (string: builtins.str) -> builtins.str:
                 i_nl = index(string, "\n", i_nl+1)
         return string
     
-    return trim(parseDec(parseInc(braces(interface(doWhile(extras(replace(forLoop(parseComments(replace(string, "{", "{\n"))), ";", "\n"))))))))
+    return trim(parseDec(parseInc(braces(interface(doWhile(extras(replace(forLoop(replace(parseComments(string), "{", "{\n")), ";", "\n"))))))))
 
 from timeit import default_timer
 import ast
