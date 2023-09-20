@@ -60,16 +60,16 @@ def parse (string: builtins.str) -> builtins.str:
                 if i != len(string)-1 and match(r"[_a-zA-Z0-9]", string[i+2]):
                     variable = search(r"[_a-zA-Z0-9]*", string[i+2:]).group()
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
-                        string = replace(string, f"++{variable}", f"({variable}+1)")
+                        string = replace(string, f"++{variable}", f"({variable}+1)", 1)
                     else:
-                        string = replace(string, f"++{variable}", f"({variable}:={variable}+1)")
+                        string = replace(string, f"++{variable}", f"({variable}:={variable}+1)", 1)
                 # x++ -> (x:=x+1)-1
                 elif i != 0 and match(r"[_a-z-A-Z0-9]", string[i-1]):
                     variable = search(r"[_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
-                        string = replace(string, f"{variable}++", f"({variable})")
+                        string = replace(string, f"{variable}++", f"({variable})", 1)
                     else:
-                        string = replace(string, f"{variable}++", f"(({variable}:={variable}+1)-1)")
+                        string = replace(string, f"{variable}++", f"(({variable}:={variable}+1)-1)", 1)
                 else:
                     raise SyntaxError("Increment Operators must be called directly on the variable being incremented")
         except (TypeError, ValueError):
@@ -86,16 +86,16 @@ def parse (string: builtins.str) -> builtins.str:
                 if i != len(string)-1 and match(r"[_a-zA-Z0-9]", string[i+2]):
                     variable = search(r"[_a-zA-Z0-9]*", string[i+2:]).group()
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
-                        string = replace(string, f"--{variable}", f"({variable}-1)")
+                        string = replace(string, f"--{variable}", f"({variable}-1)", 1)
                     else:
-                        string = replace(string, f"--{variable}", f"({variable}:={variable}-1)")
+                        string = replace(string, f"--{variable}", f"({variable}:={variable}-1)", 1)
                 # x-- -> (x:=x-1)+1
                 elif i != 0 and match(r"[_a-z-A-Z0-9]", string[i-1]):
                     variable = search(r"[_a-zA-Z0-9]*", string[:i][::-1]).group()[::-1]
                     if variable.isnumeric() or (variable.count(".") == 1 and variable.split(".")[0].isnumeric() and variable.split(".")[1].isnumeric()):
-                        string = replace(string, f"{variable}--", f"({variable})")
+                        string = replace(string, f"{variable}--", f"({variable})", 1)
                     else:
-                        string = replace(string, f"{variable}--", f"({variable}:={variable}-1)+1")
+                        string = replace(string, f"{variable}--", f"(({variable}:={variable}-1)+1)", 1)
                 else:
                     raise SyntaxError("Decrement Operators must be called directly on the variable being decremented")
         except (TypeError, ValueError):
@@ -149,13 +149,16 @@ def parse (string: builtins.str) -> builtins.str:
             return float("inf")
 
     # Replace While Ignoring Sub-Strings
-    def replace (string: builtins.str, old: builtins.str, new: builtins.str) -> builtins.str:
+    def replace (string: builtins.str, old: builtins.str, new: builtins.str, count: float = float('inf')) -> builtins.str:
         i = 0
         try:
             while i != float("inf"):
                 i = index(string, old, i)
                 string = string[:i]+new+string[i+len(old):]
                 i += 1
+                count -= 1
+                if (count == 0):
+                    return string
         except (TypeError, ValueError):
             return string
         
