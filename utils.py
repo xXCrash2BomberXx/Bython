@@ -237,10 +237,10 @@ def copy(arg: typing.Any, /) -> typing.Any:
         A copy of argument arg.
 
     '''
-    if builtins.isinstance(arg, (builtins.list, builtins.set, builtins.tuple)):
-        return builtins.type(arg)([copy(i) for i in arg])
-    elif builtins.isinstance(arg, builtins.dict):
+    if builtins.isinstance(arg, builtins.dict):
         return builtins.type(arg)({i: copy(arg[i]) for i in arg})
+    elif builtins.isinstance(arg, typing.Iterable):
+        return builtins.type(arg)([copy(i) for i in arg])
     elif builtins.isinstance(arg, function):
         d = {}
         for i in builtins.dir(arg):
@@ -271,13 +271,7 @@ def type(arg: typing.Any, /, bases: builtins.tuple[builtins.type] = None, method
 
     '''
     if bases == None and method == None:
-        if builtins.isinstance(arg, (builtins.tuple, builtins.list, builtins.set)):
-            from types import GenericAlias
-            if builtins.all(type(i) == type(builtins.list(arg)[0]) for i in arg):
-                return GenericAlias(builtins.type(arg), type(arg[0]))
-            else:
-                return GenericAlias(builtins.type(arg), typing.Any)
-        elif builtins.isinstance(arg, builtins.dict):
+        if builtins.isinstance(arg, builtins.dict):
             from types import GenericAlias
             if builtins.all(builtins.type(i) == builtins.type(builtins.list(arg.keys())[0]) for i in arg.keys()):
                 t1 = builtins.type(list(arg.keys())[0])
@@ -288,6 +282,12 @@ def type(arg: typing.Any, /, bases: builtins.tuple[builtins.type] = None, method
             else:
                 t2 = typing.Any
             return GenericAlias(builtins.type(arg), (t1, t2))
+        elif builtins.isinstance(arg, typing.Iterable):
+            from types import GenericAlias
+            if builtins.all(type(i) == type(builtins.list(arg)[0]) for i in arg):
+                return GenericAlias(builtins.type(arg), type(arg[0]))
+            else:
+                return GenericAlias(builtins.type(arg), typing.Any)
         else:
             return builtins.type(arg)
     else:
