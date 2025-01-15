@@ -121,7 +121,7 @@ def parse (string: builtins.str) -> builtins.str:
                 if temp != float("inf") and temp2 == float("inf"):
                     string = string[:temp]
                 else:
-                    string = string[:temp]+string[temp2+2:]
+                    string = string[:temp]+string[temp2:]
         except (TypeError, ValueError):
             pass
         try:
